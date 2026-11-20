@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Šiqʼāl — a constructed language</title>
+<style>
+:root {
+  --paper: #f7f2e8;
+  --paper-2: #efe8d9;
+  --ink: #241f1a;
+  --ink-soft: #574d43;
+  --rust: #8c3b2b;
+  --rust-soft: #b4674f;
+  --moss: #4b5b47;
+  --rule: #d8cdb9;
+  --gold: #b08a3e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  font-size: 18px;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(176,138,62,.08), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(140,59,43,.06), transparent 60%);
+  z-index: 0;
+}
+.masthead {
+  position: relative;
+  z-index: 1;
+  border-bottom: 1px solid var(--rule);
+  background: linear-gradient(180deg, #f3ecdd 0%, #f7f2e8 100%);
+  padding: 64px 24px 40px;
+}
+.masthead-inner { max-width: 1180px; margin: 0 auto; }
+.kicker {
+  font-family: "Gill Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--rust); font-weight: 600;
+}
+.masthead h1 {
+  font-size: clamp(56px, 9vw, 112px);
+  line-height: .92;
+  margin: 10px 0 4px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+.masthead .sub {
+  font-size: clamp(20px, 2.6vw, 30px);
+  font-style: italic;
+  color: var(--moss);
+  margin: 6px 0 18px;
+}
+.masthead .meta::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 2px;
+  background: var(--rust);
+  margin-top: 20px;
+}
+.masthead .ipa { font-size: .55em; color: var(--ink-soft); letter-spacing: .02em; }
+.masthead .meta {
+  font-family: "Gill Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 56px;
+  position: relative;
+  z-index: 1;
+}
+nav.toc {
+  position: sticky;
+  top: 28px;
+  align-self: start;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  font-family: "Gill Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  border-left: 1px solid var(--rule);
+  padding-left: 18px;
+}
+nav.toc > h2 {
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--ink-soft); margin: 0 0 12px; border: 0; padding: 0;
+}
+nav.toc ol { list-style: none; margin: 0; padding: 0; }
+nav.toc li { margin: 5px 0; }
+nav.toc a { color: var(--ink-soft); text-decoration: none; line-height: 1.35; display: block; }
+nav.toc a:hover { color: var(--rust); }
+nav.toc .toc-l2 { font-weight: 600; margin-top: 12px; }
+nav.toc .toc-l3 { padding-left: 12px; font-size: 12.5px; }
+main { min-width: 0; }
+main > h1.doc-title { display: none; }
+h1, h2, h3, h4 {
+  font-family: "Gill Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  line-height: 1.18;
+  color: var(--ink);
+}
+h2 {
+  font-size: clamp(28px, 4vw, 40px);
+  margin: 72px 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+  letter-spacing: -.01em;
+  scroll-margin-top: 24px;
+}
+h2:first-of-type { margin-top: 0; }
+h3 {
+  font-size: clamp(21px, 2.6vw, 26px);
+  margin: 44px 0 12px;
+  color: var(--rust);
+  scroll-margin-top: 24px;
+}
+h4 {
+  font-size: 16px;
+  margin: 32px 0 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--moss);
+}
+p { margin: 0 0 1.05em; }
+a { color: var(--rust); text-decoration: underline; text-underline-offset: 2px; }
+strong { font-weight: 700; }
+em { font-style: italic; }
+hr {
+  border: 0; height: 1px; background: var(--rule);
+  margin: 48px 0;
+}
+blockquote {
+  margin: 22px 0;
+  padding: 6px 0 6px 22px;
+  border-left: 3px solid var(--gold);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+blockquote strong { color: var(--ink); font-style: normal; }
+ul, ol { margin: 0 0 1.1em; padding-left: 1.4em; }
+li { margin: .3em 0; }
+code {
+  font-family: "SF Mono", "Cascadia Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: .86em;
+  background: rgba(140,59,43,.07);
+  border-radius: 3px;
+  padding: .08em .3em;
+}
+pre.interlinear {
+  background: #f0e9da;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--rust);
+  border-radius: 3px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  margin: 20px 0 26px;
+  line-height: 1.5;
+}
+pre.interlinear code {
+  background: none;
+  padding: 0;
+  font-size: 13.5px;
+  color: #2c2620;
+  white-space: pre;
+}
+.table-wrap { overflow-x: auto; margin: 18px 0 28px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  line-height: 1.45;
+}
+thead th {
+  font-family: "Gill Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--paper);
+  background: var(--moss);
+  padding: 8px 12px;
+  border: 1px solid var(--moss);
+  font-weight: 600;
+}
+tbody td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+tbody tr:nth-child(even) { background: rgba(255,255,255,.35); }
+tbody tr:hover { background: rgba(176,138,62,.10); }
+.lex-search {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin: 26px 0 8px;
+  padding: 14px 16px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+.lex-search label {
+  font-family: "Gill Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.lex-search input {
+  flex: 1 1 240px;
+  font: inherit;
+  font-size: 16px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  background: #fffdf8;
+  color: var(--ink);
+  border-radius: 3px;
+  outline: none;
+}
+.lex-search input:focus { border-color: var(--rust); box-shadow: 0 0 0 2px rgba(140,59,43,.12); }
+.lex-count {
+  font-family: "Gill Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: 12px; color: var(--ink-soft);
+}
+tr.hidden { display: none; }
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--rule);
+  padding: 30px 24px 50px;
+  font-family: "Gill Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  font-size: 12px;
+  letter-spacing: .06em;
+  color: var(--ink-soft);
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; gap: 32px; padding-top: 32px; }
+  nav.toc { position: static; max-height: none; border-left: 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 14px 0; }
+  nav.toc ol { columns: 2; column-gap: 24px; }
+  nav.toc .toc-l2 { margin-top: 6px; }
+  .masthead { padding-top: 44px; }
+}
+@media print {
+  body { background: #fff; font-size: 11pt; }
+  .masthead h1 { font-size: 36pt; }
+  body::before, nav.toc, .lex-search { display: none; }
+  .shell { display: block; max-width: none; padding: 0; }
+  .masthead { border: 0; padding: 0 0 18px; }
+  h2 { page-break-after: avoid; }
+  pre, table, blockquote { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="kicker">A constructed language</div>
+    <h1>Šiqʼāl</h1>
+    <p class="sub">The speech of the Šiqʼar <span class="ipa">[ʃiˈqʼaːl]</span></p>
+    <p class="meta">Grammar &nbsp;·&nbsp; Lexicon &nbsp;·&nbsp; Texts</p>
+  </div>
+</header>
+<div class="shell">
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol><li class="toc-l2"><a href="#1-phonology">1. Phonology</a></li>
+<li class="toc-l3"><a href="#1-1-consonants">1.1 Consonants</a></li>
+<li class="toc-l3"><a href="#1-2-vowels">1.2 Vowels</a></li>
+<li class="toc-l3"><a href="#1-3-allophony">1.3 Allophony</a></li>
+<li class="toc-l3"><a href="#1-4-phonotactics">1.4 Phonotactics</a></li>
+<li class="toc-l3"><a href="#1-5-stress">1.5 Stress</a></li>
+<li class="toc-l3"><a href="#1-6-initial-lenition">1.6 Initial lenition</a></li>
+<li class="toc-l2"><a href="#2-writing-system">2. Writing system</a></li>
+<li class="toc-l2"><a href="#3-nouns">3. Nouns</a></li>
+<li class="toc-l3"><a href="#3-1-number">3.1 Number</a></li>
+<li class="toc-l3"><a href="#3-2-case">3.2 Case</a></li>
+<li class="toc-l3"><a href="#3-3-possession">3.3 Possession</a></li>
+<li class="toc-l3"><a href="#3-4-demonstratives">3.4 Demonstratives</a></li>
+<li class="toc-l3"><a href="#3-5-pronouns">3.5 Pronouns</a></li>
+<li class="toc-l2"><a href="#4-adjectives-and-comparison">4. Adjectives and comparison</a></li>
+<li class="toc-l2"><a href="#5-numerals">5. Numerals</a></li>
+<li class="toc-l2"><a href="#6-verbs">6. Verbs</a></li>
+<li class="toc-l3"><a href="#6-1-the-verb-template">6.1 The verb template</a></li>
+<li class="toc-l3"><a href="#6-2-aspect">6.2 Aspect</a></li>
+<li class="toc-l3"><a href="#6-3-evidentiality">6.3 Evidentiality</a></li>
+<li class="toc-l3"><a href="#6-4-agreement">6.4 Agreement</a></li>
+<li class="toc-l3"><a href="#6-5-mood">6.5 Mood</a></li>
+<li class="toc-l3"><a href="#6-6-valency-and-derivation">6.6 Valency and derivation</a></li>
+<li class="toc-l3"><a href="#6-7-negation">6.7 Negation</a></li>
+<li class="toc-l3"><a href="#6-8-existentials-and-possession">6.8 Existentials and possession</a></li>
+<li class="toc-l2"><a href="#7-syntax">7. Syntax</a></li>
+<li class="toc-l3"><a href="#7-1-clause-structure-and-word-order">7.1 Clause structure and word order</a></li>
+<li class="toc-l3"><a href="#7-2-ergativity">7.2 Ergativity</a></li>
+<li class="toc-l3"><a href="#7-3-questions">7.3 Questions</a></li>
+<li class="toc-l3"><a href="#7-4-relative-clauses">7.4 Relative clauses</a></li>
+<li class="toc-l3"><a href="#7-5-complement-clauses-and-converbs">7.5 Complement clauses and converbs</a></li>
+<li class="toc-l3"><a href="#7-6-coordination">7.6 Coordination</a></li>
+<li class="toc-l3"><a href="#7-7-information-structure">7.7 Information structure</a></li>
+<li class="toc-l2"><a href="#8-word-formation">8. Word formation</a></li>
+<li class="toc-l3"><a href="#8-1-nominal-suffixes">8.1 Nominal suffixes</a></li>
+<li class="toc-l3"><a href="#8-2-verbal-suffixes">8.2 Verbal suffixes</a></li>
+<li class="toc-l3"><a href="#8-3-compounds">8.3 Compounds</a></li>
+<li class="toc-l3"><a href="#8-4-a-worked-family">8.4 A worked family</a></li>
+<li class="toc-l2"><a href="#9-lexicon">9. Lexicon</a></li>
+<li class="toc-l3"><a href="#9-1-the-lexicon-by-field">9.1 The lexicon by field</a></li>
+<li class="toc-l2"><a href="#10-texts">10. Texts</a></li>
+<li class="toc-l3"><a href="#10-1-the-sheep-and-the-horses">10.1 The Sheep and the Horses</a></li>
+<li class="toc-l3"><a href="#10-2-proverbs">10.2 Proverbs</a></li>
+<li class="toc-l3"><a href="#10-3-a-dialogue">10.3 A dialogue</a></li>
+<li class="toc-l3"><a href="#10-4-a-lament">10.4 A lament</a></li>
+<li class="toc-l3"><a href="#10-5-a-riddle">10.5 A riddle</a></li>
+<li class="toc-l3"><a href="#10-6-phrasebook">10.6 Phrasebook</a></li></ol>
+  </nav>
+  <main>
+<h1 id="šiqʼāl" class="doc-title">Šiqʼāl</h1>
+<blockquote><strong>The speech of the Šiqʼar</strong><br>A constructed language — grammar, lexicon, and texts</blockquote>
+<p><strong>Šiqʼāl</strong> [ʃiˈqʼaːl] is the language of the Šiqʼar, a fictional mountain people of the highland river valleys. It is an isolate: no proven relatives, no written history before the present century, and a rich oral literature of proverbs, laments, riddles, and legal formula. This document is a descriptive grammar of the standard literary variety, together with a core lexicon and five annotated texts.</p>
+<p>The design is naturalistic rather than schematic. The sound system borrows the ejective–aspirate–plain stop contrast, the uvulars, and the dense consonant clusters of the Northwest Caucasus; the morphosyntax owes its ergativity and polypersonal agreement to Mayan and Basque; the evidential system is modelled on Tibetan and Quechua; and the initial consonant alternations will look familiar to anyone who has studied the Celtic languages. None of this is genealogy — it is typological taste.</p>
+<p>The language at a glance:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Feature</th><th>Šiqʼāl</th></tr></thead>
+<tbody>
+<tr><td>Word order</td><td>verb–subject–object; head-initial</td></tr>
+<tr><td>Alignment</td><td>ergative–absolutive</td></tr>
+<tr><td>Agreement</td><td>polypersonal: ergative and absolutive</td></tr>
+<tr><td>Evidentiality</td><td>visual, sensory, inferential, reported, assumed</td></tr>
+<tr><td>Numerals</td><td>duodecimal (base 12)</td></tr>
+<tr><td>Phonology</td><td>27 consonants; 5 vowels × short, long, nasal</td></tr>
+<tr><td>Signature features</td><td>initial lenition; no grammatical tense</td></tr>
+</tbody></table></div>
+<p>A note on the spelling: <strong>ʼ</strong> is a glottal stop (or the mark of an ejective), <strong>ʰ</strong> marks aspiration, a macron marks a long vowel, an ogonek marks a nasal vowel, <strong>š</strong> is <em>sh</em>, <strong>ŋ</strong> is <em>ng</em>, and <strong>c</strong> is <em>ts</em>. Stress is marked here only where it is not predictable from the rules in §1.5.</p>
+<hr>
+<h2 id="1-phonology">1. Phonology</h2>
+<h3 id="1-1-consonants">1.1 Consonants</h3>
+<p>Šiqʼāl has twenty-seven consonant phonemes, organised around a three-way contrast among stops: plain, aspirated, and ejective.</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Labial</th><th>Alveolar</th><th>Postalveolar</th><th>Velar</th><th>Uvular</th><th>Glottal</th></tr></thead>
+<tbody>
+<tr><td>Plain stop</td><td>p</td><td>t</td><td></td><td>k</td><td>q</td><td>ʔ</td></tr>
+<tr><td>Aspirated stop</td><td>pʰ</td><td>tʰ</td><td></td><td>kʰ</td><td>qʰ</td><td></td></tr>
+<tr><td>Ejective stop</td><td>pʼ</td><td>tʼ</td><td></td><td>kʼ</td><td>qʼ</td><td></td></tr>
+<tr><td>Affricate</td><td></td><td>ts tsʰ tsʼ</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Fricative</td><td></td><td>s</td><td>ʃ</td><td>x</td><td></td><td>h</td></tr>
+<tr><td>Nasal</td><td>m</td><td>n</td><td></td><td>ŋ</td><td></td><td></td></tr>
+<tr><td>Liquid</td><td></td><td>l r</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>Glide</td><td>w</td><td></td><td></td><td>j</td><td></td><td></td></tr>
+</tbody></table></div>
+<p>The romanization is close to the IPA, with these conventions:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>IPA</th><th>p</th><th>pʰ</th><th>pʼ</th><th>t</th><th>tʰ</th><th>tʼ</th><th>k</th><th>kʰ</th><th>kʼ</th><th>q</th><th>qʰ</th><th>qʼ</th><th>ʔ</th></tr></thead>
+<tbody>
+<tr><td>Roman</td><td>p</td><td>ph</td><td>pʼ</td><td>t</td><td>th</td><td>tʼ</td><td>k</td><td>kh</td><td>kʼ</td><td>q</td><td>qh</td><td>qʼ</td><td>ʼ</td></tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>IPA</th><th>ts</th><th>tsʰ</th><th>tsʼ</th><th>s</th><th>ʃ</th><th>x</th><th>h</th><th>m</th><th>n</th><th>ŋ</th><th>l</th><th>r</th><th>j</th><th>w</th></tr></thead>
+<tbody>
+<tr><td>Roman</td><td>c</td><td>ch</td><td>cʼ</td><td>s</td><td>š</td><td>x</td><td>h</td><td>m</td><td>n</td><td>ŋ</td><td>l</td><td>r</td><td>y</td><td>w</td></tr>
+</tbody></table></div>
+<p>Three consonants are marginal. <strong>/ŋ/</strong> occurs chiefly in the numeral <em>ŋel</em> "eleven" and in expressive vocabulary. <strong>/tsʰ/</strong> (<em>ch</em>) is rare and mostly found in loanwords and ideophones. <strong>/x/</strong> has a wide range, from a velar fricative to a uvular [χ] next to back vowels and uvulars.</p>
+<h3 id="1-2-vowels">1.2 Vowels</h3>
+<p>The vowel system is symmetrical: five qualities, each with a short, a long, and a nasal form.</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Front</th><th>Central</th><th>Back</th></tr></thead>
+<tbody>
+<tr><td>Close</td><td>i · iː · į</td><td></td><td>u · uː · ų</td></tr>
+<tr><td>Mid</td><td>e · eː · ę</td><td></td><td>o · oː · ǫ</td></tr>
+<tr><td>Open</td><td></td><td>a · aː · ą</td><td></td></tr>
+</tbody></table></div>
+<p>Long vowels are written with a macron (<em>ā ē ī ō ū</em>), nasal vowels with an ogonek (<em>ą ę į ǫ ų</em>). Long nasal vowels are phonologically possible but occur only in a handful of interjections and in the call <em>hǭ</em>, used to drive cattle.</p>
+<p>Nasal vowels are strongly nasalised and frequently nasalise a preceding glide or liquid: <em>mąk</em> "hand" is [mɑ̃k], <em>pʼų</em> "five" is [pʼũ]. In the speech of younger speakers, nasal vowels are increasingly replaced by vowel + <em>n</em>, but the literary standard preserves them.</p>
+<h3 id="1-3-allophony">1.3 Allophony</h3>
+<p>The following processes are regular and automatic.</p>
+<ol>
+<li><strong>Intervocalic voicing.</strong> Plain stops voice between vowels and after nasals: /p t k q/ → [b d g ɢ]. Thus <em>pāta</em> "master" is [ˈpʰaːda], <em>mukʰa</em> "fish" is [ˈmukʰa], <em>tʼara</em> "stone" is [ˈtʼara] (the ejective does not voice).</li>
+<li><strong>Aspiration.</strong> Aspirated stops are strongly aspirated word-initially and before a stressed vowel, and weakly aspirated elsewhere. They never occur word-finally.</li>
+<li><strong>Nasal assimilation.</strong> /n/ assimilates in place to a following consonant: [ŋ] before velars and uvulars, [m] before labials. In rapid speech, where the prefix vowel of <em>na-</em> may be elided, <em>nagāla</em> is [ŋˈgaːla] and <em>naper</em> is [mˈper].</li>
+<li><strong>Uvularisation of /x/.</strong> /x/ is [χ] adjacent to /q/ and next to /o u/, and [ç] before /i/: <em>xūl</em> [χuːl], <em>xar</em> [xar].</li>
+<li><strong>Dark /l/.</strong> /l/ is velarised [ɫ] in codas: <em>qʰal</em> [qʰaɫ], but <em>kāla</em> [ˈkʰaːla].</li>
+<li><strong>Laxing.</strong> Short vowels in unstressed closed syllables are lax: /a/ → [ɐ], /e/ → [ɛ], /o/ → [ɔ]. Long vowels keep their quality in all positions.</li>
+<li><strong>Glottal spreading.</strong> A glottal stop or an ejective immediately before a vowel gives that vowel a creaky onset; this is most audible in careful speech and in laments.</li>
+</ol>
+<h3 id="1-4-phonotactics">1.4 Phonotactics</h3>
+<p>The syllable template is <strong>(C)(C)V(C)</strong>.</p>
+<ul>
+<li><strong>Onsets.</strong> Any single consonant may begin a syllable. Two-consonant onsets are limited to obstruent + <em>l r y w</em> (<em>pr, kl, qʼy, xw</em>) and <em>s</em> + stop (<em>sp, st, sk, sq</em>). No other initial clusters occur.</li>
+<li><strong>Codas.</strong> Any consonant except <em>h</em> and the aspirated stops may close a syllable. Word-finally the same set occurs, but <em>x</em> is avoided.</li>
+<li><strong>No geminates.</strong> Identical consonants simplify across morpheme boundaries: <em>š-šiqʼa</em> → <em>šiqʼa</em>.</li>
+<li><strong>Hiatus.</strong> Sequences of vowels across morpheme boundaries are resolved by glide insertion (<em>y</em> after front vowels, <em>w</em> after back vowels) or by contraction.</li>
+</ul>
+<p>Some representative words: <em>tʼerka</em> [ˈtʼer.ka] "wagon", <em>šiqʼāl</em> [ʃiˈqʼaːl] "language", <em>kālya</em> [ˈkʰaːl.ja] "village", <em>pʼenya</em> [ˈpʼen.ja] "wool", <em>qʼāla</em> [ˈqʼaː.la] "sky".</p>
+<h3 id="1-5-stress">1.5 Stress</h3>
+<p>Stress is weight-sensitive and falls on the <strong>rightmost heavy syllable</strong> of the word. A syllable is heavy if it contains a long vowel, a nasal vowel, or a coda consonant. If no syllable is heavy, stress falls on the <strong>first</strong> syllable.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Word</th><th>Syllables</th><th>Stress</th></tr></thead>
+<tbody>
+<tr><td><em>šiqʼāl</em></td><td>ši · qʼāl</td><td>final (long vowel + coda)</td></tr>
+<tr><td><em>kāla</em></td><td>kā · la</td><td>first (long vowel)</td></tr>
+<tr><td><em>tʼara</em></td><td>tʼa · ra</td><td>first (no heavy syllable)</td></tr>
+<tr><td><em>qʰara</em></td><td>qʰa · ra</td><td>first</td></tr>
+<tr><td><em>nāwa</em></td><td>nā · wa</td><td>first</td></tr>
+<tr><td><em>pʼenya</em></td><td>pʼen · ya</td><td>first (closed syllable)</td></tr>
+<tr><td><em>kʼatʼa</em></td><td>kʼa · tʼa</td><td>first</td></tr>
+<tr><td><em>tūxawan</em></td><td>tū · xa · wan</td><td>final (closed syllable)</td></tr>
+</tbody></table></div>
+<p>Stress is not written in ordinary orthography. It is shown in this grammar only where it is useful.</p>
+<h3 id="1-6-initial-lenition">1.6 Initial lenition</h3>
+<p>Šiqʼāl has a system of initial consonant alternations — lenition — which is one of the language's most characteristic features. It is triggered by three constructions: possessive prefixes, the prepositions <em>a</em> "to" and <em>e</em> "from" (and <em>xam</em> "with"), and the negative prefix <em>u-</em>.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Underlying</th><th>Lenited</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>p</td><td>b</td><td><em>pāta</em> → <em>nabāta</em> "my master"</td></tr>
+<tr><td>ph</td><td>p</td><td><em>pʰer</em> → <em>naper</em> "my skin"</td></tr>
+<tr><td>pʼ</td><td>pʼ</td><td><em>pʼen</em> → <em>napʼen</em> "my sheep"</td></tr>
+<tr><td>t</td><td>d</td><td><em>tēra</em> → <em>nadēra</em> "my earth"</td></tr>
+<tr><td>th</td><td>t</td><td><em>tʰer</em> → <em>nater</em> "my man"</td></tr>
+<tr><td>tʼ</td><td>tʼ</td><td><em>tʼara</em> → <em>natʼara</em> "my stone"</td></tr>
+<tr><td>k</td><td>g</td><td><em>kāla</em> → <em>nagāla</em> "my house"</td></tr>
+<tr><td>kh</td><td>k</td><td><em>kʰām</em> → <em>nakām</em> "my load"</td></tr>
+<tr><td>kʼ</td><td>kʼ</td><td><em>kʼur</em> → <em>nakʼur</em> "my horse"</td></tr>
+<tr><td>q</td><td>ġ</td><td><em>quna</em> → <em>naġuna</em> "my spring"</td></tr>
+<tr><td>qh</td><td>q</td><td><em>qʰara</em> → <em>naqara</em> "my mountain"</td></tr>
+<tr><td>qʼ</td><td>qʼ</td><td><em>qʼal</em> → <em>naqʼal</em> "my leaf"</td></tr>
+<tr><td>c</td><td>dz</td><td><em>ciru</em> → <em>nadziru</em> "my rain"</td></tr>
+<tr><td>ch</td><td>c</td><td>rare; no native initial example</td></tr>
+<tr><td>cʼ</td><td>cʼ</td><td><em>cʼīra</em> → <em>nacʼīra</em> "my bird"</td></tr>
+</tbody></table></div>
+<p>The triggers are consistent:</p>
+<ul>
+<li><strong>Possessive prefixes</strong>: <em>kāla</em> "house" → <em>nagāla</em> "my house"; <em>pʰer</em> "skin" → <em>naper</em> "my skin"; <em>qʰara</em> "mountain" → <em>naqara</em> "my mountain".</li>
+<li><strong>Prepositions</strong>: <em>a kāla</em> → <em>a gāla</em> "to the house"; <em>e qʰara</em> → <em>e qara</em> "from the mountain"; <em>xam tʰer</em> → <em>xam ter</em> "with the man".</li>
+<li><strong>Negation</strong>: <em>kʰen</em> "say" → <em>u-ken</em> "not say"; <em>pʰan</em> "work" → <em>u-pan</em> "not work"; <em>kʼal</em> "build" → <em>u-kʼal</em> (ejectives do not lenite).</li>
+</ul>
+<p>Lenition is written at morpheme boundaries but not inside roots. That is why <em>tʰapa</em> "bread" is spelled with <em>p</em> even though the <em>p</em> is pronounced [b] between vowels, while <em>nabāta</em> is spelled with <em>b</em>. The orthography is morphophonemic: it writes the alternation where it carries grammar.</p>
+<hr>
+<h2 id="2-writing-system">2. Writing system</h2>
+<p>Šiqʼāl is written in an abugida called <strong>Sīrāl</strong> ("writing"), a relatively recent development in the language's history. The script is written in <strong>vertical columns running top to bottom</strong>, with columns ordered <strong>left to right</strong> — the opposite of the neighbouring valley scripts, a fact the Šiqʼar are fond of mentioning.</p>
+<p>Each consonant has a base glyph and carries an inherent vowel <strong>a</strong>. Vowel signs are attached to the right side of the base glyph (which, in vertical orientation, means below it). The system distinguishes:</p>
+<ul>
+<li><strong>short vowels</strong> by a single stroke or dot;</li>
+<li><strong>long vowels</strong> by a doubled stroke;</li>
+<li><strong>nasal vowels</strong> by a small circle above the base;</li>
+<li><strong>ejectives</strong> by a spur or notch on the base glyph;</li>
+<li><strong>aspirates</strong> by a doubling of the base's left edge.</li>
+</ul>
+<p>Word-initial vowels use a silent carrier glyph. There is no case distinction, no punctuation beyond a vertical bar for clause boundaries and a double bar for paragraph breaks, and no spaces between words in traditional orthography — a practice that makes legal documents notoriously difficult for children.</p>
+<p>The romanization used in this document is the standard scholarly transliteration, not the native script. A full palaeography of Sīrāl is beyond the scope of this grammar.</p>
+<hr>
+<h2 id="3-nouns">3. Nouns</h2>
+<p>Nouns are not marked for gender or noun class. They inflect for <strong>number</strong> and <strong>case</strong>, and they take <strong>possessive prefixes</strong> when the possessor is pronominal. Definiteness is not grammatical: <em>kāla</em> can mean "house", "a house", or "the house" according to context.</p>
+<h3 id="3-1-number">3.1 Number</h3>
+<p>The plural is formed with a suffix.</p>
+<ul>
+<li>After a vowel: <strong>-r</strong>.</li>
+<li>After a consonant: <strong>-Vr</strong>, where the vowel harmonises with the last vowel of the stem: <strong>-ir</strong> after <em>i, e</em>; <strong>-ur</strong> after <em>o, u</em>; <strong>-ar</strong> after <em>a</em>.</li>
+</ul>
+<div class="table-wrap"><table>
+<thead><tr><th>Singular</th><th>Plural</th><th>Gloss</th></tr></thead>
+<tbody>
+<tr><td><em>kāla</em></td><td><em>kālar</em></td><td>house</td></tr>
+<tr><td><em>tʼara</em></td><td><em>tʼarar</em></td><td>stone</td></tr>
+<tr><td><em>qʼama</em></td><td><em>qʼamar</em></td><td>animal</td></tr>
+<tr><td><em>mīl</em></td><td><em>mīlir</em></td><td>moon</td></tr>
+<tr><td><em>pʼen</em></td><td><em>pʼenir</em></td><td>sheep</td></tr>
+<tr><td><em>tʰūl</em></td><td><em>tʰūlur</em></td><td>tree</td></tr>
+<tr><td><em>kʼur</em></td><td><em>kʼurur</em></td><td>horse</td></tr>
+<tr><td><em>qʰal</em></td><td><em>qʰalar</em></td><td>head</td></tr>
+</tbody></table></div>
+<p>Mass nouns such as <em>mā</em> "water" and <em>tʰap</em> "grain" do not normally pluralise. A singulative <em>-ni</em> can individuate them: <em>māni</em> "a body of water", <em>tʰapni</em> "a single grain".</p>
+<h3 id="3-2-case">3.2 Case</h3>
+<p>There are six cases. The absolutive is unmarked; the others are suffixed. Vowel-final and consonant-final stems take slightly different ergative and genitive forms.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Case</th><th>After vowel</th><th>After consonant</th><th>Function</th></tr></thead>
+<tbody>
+<tr><td>Absolutive</td><td>-Ø</td><td>-Ø</td><td>S of intransitive, O of transitive</td></tr>
+<tr><td>Ergative</td><td>-š</td><td>-iš</td><td>A of transitive</td></tr>
+<tr><td>Genitive</td><td>-n</td><td>-in</td><td>possessor, origin, "of"</td></tr>
+<tr><td>Dative</td><td>-kha</td><td>-kha</td><td>recipient, goal, possessor with <em>tʼa</em></td></tr>
+<tr><td>Locative</td><td>-mi</td><td>-mi</td><td>in, at, on</td></tr>
+<tr><td>Ablative</td><td>-tar</td><td>-tar</td><td>from, out of, than</td></tr>
+</tbody></table></div>
+<p>The paradigm of <em>kāla</em> "house":</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Case</th><th>Form</th><th>Gloss</th></tr></thead>
+<tbody>
+<tr><td>ABS</td><td><em>kāla</em></td><td>house</td></tr>
+<tr><td>ERG</td><td><em>kālaš</em></td><td>house (as agent)</td></tr>
+<tr><td>GEN</td><td><em>kālan</em></td><td>of the house</td></tr>
+<tr><td>DAT</td><td><em>kālakha</em></td><td>to the house</td></tr>
+<tr><td>LOC</td><td><em>kālami</em></td><td>in the house</td></tr>
+<tr><td>ABL</td><td><em>kālatar</em></td><td>from the house</td></tr>
+</tbody></table></div>
+<p>And of <em>tʰūl</em> "tree":</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Case</th><th>Form</th><th>Gloss</th></tr></thead>
+<tbody>
+<tr><td>ABS</td><td><em>tʰūl</em></td><td>tree</td></tr>
+<tr><td>ERG</td><td><em>tʰūliš</em></td><td>tree (as agent)</td></tr>
+<tr><td>GEN</td><td><em>tʰūlin</em></td><td>of the tree</td></tr>
+<tr><td>DAT</td><td><em>tʰūlkha</em></td><td>to the tree</td></tr>
+<tr><td>LOC</td><td><em>tʰūlmi</em></td><td>in the tree</td></tr>
+<tr><td>ABL</td><td><em>tʰūltar</em></td><td>from the tree</td></tr>
+</tbody></table></div>
+<p>Case stacking with the plural is regular. The plural in <em>-r</em> is a consonant-final stem, so it takes <em>-iš</em> and <em>-in</em>: <em>kālariš</em> "houses (ERG)", <em>kālarin</em> "of the houses". The learner should treat the plural as a stem in its own right: <em>kālar-</em> takes <em>-iš, -in, -kha, -mi, -tar</em>.</p>
+<p>The dative has a second, very common use: it marks the possessor with the existential verb <em>tʼa</em> (§6.8). The ablative is also the comparative case: <em>xān pʰali wa tʼaratar</em> "it is bigger than a stone" (§4).</p>
+<h3 id="3-3-possession">3.3 Possession</h3>
+<p>Pronominal possession is marked by prefixes. The prefix vowel is <strong>a</strong>, and the prefix triggers lenition of a following stop or affricate.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Person</th><th>Prefix</th><th><em>kāla</em> "house"</th><th><em>xūl</em> "heart"</th></tr></thead>
+<tbody>
+<tr><td>1SG</td><td>na-</td><td><em>nagāla</em></td><td><em>naxūl</em></td></tr>
+<tr><td>2SG</td><td>ta-</td><td><em>tagāla</em></td><td><em>taxūl</em></td></tr>
+<tr><td>3SG</td><td>ša-</td><td><em>šagāla</em></td><td><em>šaxūl</em></td></tr>
+<tr><td>1PL</td><td>ma-</td><td><em>magāla</em></td><td><em>maxūl</em></td></tr>
+<tr><td>2PL</td><td>ca-</td><td><em>cagāla</em></td><td><em>caxūl</em></td></tr>
+<tr><td>3PL</td><td>qa-</td><td><em>qagāla</em></td><td><em>qaxūl</em></td></tr>
+</tbody></table></div>
+<p>Before a root that begins with a vowel, the prefix vowel is deleted: <em>na-</em> + <em>axa</em> "father" → <strong>naxa</strong> "my father"; <em>ta-</em> + <em>ama</em> "mother" → <strong>tama</strong> "your mother"; <em>ša-</em> + <em>ʼasa</em> "fire" → <strong>šaʼasa</strong> "his fire" (the glottal stop blocks deletion).</p>
+<p>The prefixes combine with case suffixes in the expected order: <em>nagālaš</em> "my house (ERG)", <em>nagālan</em> "of my house", <em>nagālakha</em> "to my house".</p>
+<p>Full-noun possession uses the genitive, with the possessed noun first (head-initial): <em>kāla tʰerin</em> "the man's house", <em>nāma nan</em> "my name" (literally "name of-me").</p>
+<h3 id="3-4-demonstratives">3.4 Demonstratives</h3>
+<p>There are two demonstratives, <strong>sa</strong> "this" and <strong>su</strong> "that". They are invariant and precede the noun: <em>sa kāla</em> "this house", <em>su kʼur</em> "that horse". With a case-marked noun the demonstrative stays put: <em>sa kālami</em> "in this house".</p>
+<p>From them are formed the locational adverbs <strong>sami</strong> "here" and <strong>sumi</strong> "there" (literally "at this" and "at that").</p>
+<h3 id="3-5-pronouns">3.5 Pronouns</h3>
+<p>Independent pronouns distinguish first, second, and third person, singular and plural, and — in the third person — human and non-human. They take the same case suffixes as nouns.</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>ABS</th><th>ERG</th><th>GEN</th><th>DAT</th></tr></thead>
+<tbody>
+<tr><td>1SG</td><td><em>na</em></td><td><em>naš</em></td><td><em>nan</em></td><td><em>nakha</em></td></tr>
+<tr><td>2SG</td><td><em>ta</em></td><td><em>taš</em></td><td><em>tan</em></td><td><em>takha</em></td></tr>
+<tr><td>3SG human</td><td><em>sa</em></td><td><em>saš</em></td><td><em>san</em></td><td><em>sakha</em></td></tr>
+<tr><td>3SG non-human</td><td><em>wa</em></td><td><em>waš</em></td><td><em>wan</em></td><td><em>wakha</em></td></tr>
+<tr><td>1PL</td><td><em>nam</em></td><td><em>namiš</em></td><td><em>namin</em></td><td><em>namkha</em></td></tr>
+<tr><td>2PL</td><td><em>tam</em></td><td><em>tamiš</em></td><td><em>tamin</em></td><td><em>tamkha</em></td></tr>
+<tr><td>3PL human</td><td><em>sar</em></td><td><em>sariš</em></td><td><em>sarin</em></td><td><em>sarkha</em></td></tr>
+<tr><td>3PL non-human</td><td><em>war</em></td><td><em>wariš</em></td><td><em>warin</em></td><td><em>warkha</em></td></tr>
+</tbody></table></div>
+<p>Pronouns are used for emphasis, contrast, and disambiguation; the verb's agreement suffixes usually make them unnecessary. <em>Na</em> in <em>yutwan</em> "I go" is redundant, but <em>na yutwan</em> is emphatic: "<strong>I</strong> am going."</p>
+<hr>
+<h2 id="4-adjectives-and-comparison">4. Adjectives and comparison</h2>
+<p>Šiqʼāl has a small closed class of true adjectives, most of them borrowings or relics. The great majority of property concepts — "big", "cold", "good", "heavy" — are <strong>stative verbs</strong>, which inflect like any other verb when predicative.</p>
+<p>When a stative verb modifies a noun, it takes the <strong>attributive participle</strong> suffix <strong>-i</strong> and follows the noun. The suffix replaces a final <strong>-a</strong> of the stem (<em>kʼatʼa</em> → <em>kʼatʼi</em>) and surfaces as <strong>-y</strong> after other vowels (<em>pʰā</em> → <em>pʰāy</em>):</p>
+<ul>
+<li><em>kāla pʰali</em> "a big house" (<em>pʰal</em> "be big")</li>
+<li><em>tʰer kʼatʼi</em> "a strong man" (<em>kʼatʼa</em> "be strong")</li>
+<li><em>pʼenya pʰāy</em> "warm wool" (<em>pʰā</em> "be warm")</li>
+<li><em>kālar pʰalir</em> "big houses" — the participle agrees in number with the noun.</li>
+</ul>
+<p>Predicatively, the stative verb is the main verb of the clause and precedes its subject:</p>
+<ul>
+<li><em>Pʰali kāla.</em> "The house is big."</li>
+<li><em>Kʼatʼay tʰer.</em> "The man is strong."</li>
+<li><em>Pʰāy pʼenya.</em> "The wool is warm."</li>
+</ul>
+<p>The participle <em>-i</em> is also the source of a large number of lexical adjectives: <em>sāmi</em> "good", <em>kʼari</em> "bad", <em>tūmi</em> "quick".</p>
+<p>Adverbs are formed from stative verbs with <strong>-an</strong>, with contraction after a vowel: <em>tūma</em> "be quick" → <em>tūman</em> "quickly"; <em>sāma</em> "be good" → <em>sāman</em> "well".</p>
+<p>Comparison uses the adverb <strong>xān</strong> "more" and the ablative of the standard:</p>
+<ul>
+<li><em>Xān pʰali wa tʼaratar.</em> "It is bigger than a stone."</li>
+<li><em>Xān kʼatʼay sa natar?</em> "Is he stronger than me?"</li>
+</ul>
+<p>There is no dedicated superlative; "the biggest" is expressed with <em>xān</em> and a partitive phrase, or with <em>qʼama</em> "all": <em>xān pʰali wa qʼamartar</em> "it is bigger than all animals".</p>
+<hr>
+<h2 id="5-numerals">5. Numerals</h2>
+<p>Šiqʼāl counts in <strong>twelves</strong>. The numerals one to twelve are roots; thirteen to twenty-three are additive compounds with <em>cʼa</em> "twelve"; multiples of twelve are multiplicative; and 144 has its own root.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Value</th><th>Numeral</th><th>Value</th><th>Numeral</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><em>so</em></td><td>7</td><td><em>qʼat</em></td></tr>
+<tr><td>2</td><td><em>tʼi</em></td><td>8</td><td><em>lun</em></td></tr>
+<tr><td>3</td><td><em>kʰal</em></td><td>9</td><td><em>tʰas</em></td></tr>
+<tr><td>4</td><td><em>mer</em></td><td>10</td><td><em>xum</em></td></tr>
+<tr><td>5</td><td><em>pʼų</em></td><td>11</td><td><em>ŋel</em></td></tr>
+<tr><td>6</td><td><em>šek</em></td><td>12</td><td><em>cʼa</em></td></tr>
+<tr><td>144</td><td><em>cʼāya</em></td><td></td><td></td></tr>
+</tbody></table></div>
+<ul>
+<li>13 = <em>cʼa-so</em> "twelve-one"</li>
+<li>20 = <em>cʼa-lun</em> "twelve-eight"</li>
+<li>24 = <em>tʼi cʼa</em> "two twelves"</li>
+<li>143 = <em>ŋel cʼa ŋel</em> "eleven twelves eleven"</li>
+<li>145 = <em>cʼāya so</em></li>
+</ul>
+<p>Numerals precede the noun. From two to twelve the noun stays singular — a relic of an older system in which the numeral was a noun and the counted noun its apposition:</p>
+<ul>
+<li><em>so kʼur</em> "one horse"</li>
+<li><em>tʼi kʼur</em> "two horses"</li>
+<li><em>cʼa kʼur</em> "twelve horses"</li>
+<li><em>cʼa-so kʼur</em> "thirteen horses"</li>
+<li><em>tʼi cʼa kʼur</em> "twenty-four horses"</li>
+<li><em>cʼāya kʼur</em> "144 horses"</li>
+</ul>
+<p>Ordinals are formed with <strong>-ti</strong>: <em>soti</em> "first", <em>tʼiti</em> "second", <em>kʰalti</em> "third". They precede the noun like cardinals: <em>soti kʼur</em> "the first horse".</p>
+<p>The interrogative <em>tʼar</em> "how many" behaves like a numeral: <em>Tʼar kʼur?</em> "How many horses?"</p>
+<p>The duodecimal base is reflected in the culture: bread is sold by the dozen, land is measured in twelfths, and the traditional year is divided into twelve months named after the moons.</p>
+<hr>
+<h2 id="6-verbs">6. Verbs</h2>
+<p>The verb is the centre of the Šiqʼāl clause. It carries aspect, evidentiality, and agreement with both the ergative and the absolutive argument, and it is the host of a rich system of valency-changing derivation.</p>
+<h3 id="6-1-the-verb-template">6.1 The verb template</h3>
+<p>The maximal verb has the following structure:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Slot</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr></thead>
+<tbody>
+<tr><td>Content</td><td>NEG</td><td>ROOT</td><td>DERIV</td><td>ASPECT</td><td>EVID</td><td>ERG</td><td>ABS</td></tr>
+<tr><td>Form</td><td><em>u-</em></td><td>—</td><td><em>-tʼi, -na, -ma, -pʼi, -ya, -ul, -kʰu</em></td><td><em>-Ø, -wa, -tʼu, -lo</em></td><td><em>-i, -yu, -ka, -šu, -Ø</em></td><td><em>-ni, -ti, -ši, -mi, -ci, -ri</em></td><td><em>-n, -t, -Ø, -m, -c, -r</em></td></tr>
+</tbody></table></div>
+<p>Only the root is obligatory. A minimal verb is a bare root, which is interpreted as perfective, assumed-evidential, third-person singular:</p>
+<ul>
+<li><em>Wāy.</em> "He came, as one would expect."</li>
+</ul>
+<p>A maximal verb can be long:</p>
+<ul>
+<li><em>U-qʼen-tʼi-kʰu-wa-ka-ši-n.</em> "He apparently could not kill me."</li>
+</ul>
+<p>In practice, such forms are rare; the example is given to show the template.</p>
+<h3 id="6-2-aspect">6.2 Aspect</h3>
+<p>Šiqʼāl has no grammatical tense. It has four aspects, and time is located by adverbs and context.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Aspect</th><th>Suffix</th><th>Meaning</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>Perfective</td><td>-Ø</td><td>completed event</td><td><em>xari</em> "saw"</td></tr>
+<tr><td>Imperfective</td><td>-wa</td><td>ongoing, habitual</td><td><em>xarwa</em> "sees, is seeing"</td></tr>
+<tr><td>Resultative</td><td>-tʼu</td><td>state resulting from an event</td><td><em>xartʼu</em> "has seen"</td></tr>
+<tr><td>Prospective</td><td>-lo</td><td>about to, will</td><td><em>xarlo</em> "will see"</td></tr>
+</tbody></table></div>
+<p>The perfective is the narrative default. The imperfective covers progressive and habitual senses; there is no separate habitual. The resultative is stative: <em>xartʼu</em> "has seen" implies that the seeing is relevant now. The prospective marks future or imminent events, often with <em>tʰan</em> "then, later".</p>
+<ul>
+<li><em>Xar-i-ši-Ø tʰeriš kāla.</em> "The man saw the house."</li>
+<li><em>Xar-wa-ši-Ø tʰeriš kāla.</em> "The man sees the house."</li>
+<li><em>Xar-tʼu-ši-Ø tʰeriš kāla.</em> "The man has seen the house."</li>
+<li><em>Xar-lo-ši-Ø tʰeriš kāla.</em> "The man will see the house."</li>
+</ul>
+<h3 id="6-3-evidentiality">6.3 Evidentiality</h3>
+<p>Every declarative verb carries an evidential suffix, obligatorily. The system distinguishes five values.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Evidential</th><th>Suffix</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Visual</td><td>-i</td><td>I saw it</td></tr>
+<tr><td>Sensory</td><td>-yu</td><td>I heard, felt, or otherwise sensed it</td></tr>
+<tr><td>Inferential</td><td>-ka</td><td>I infer it from evidence</td></tr>
+<tr><td>Reported</td><td>-šu</td><td>I was told; hearsay</td></tr>
+<tr><td>Assumed</td><td>-Ø</td><td>It is expected, obvious, or common knowledge</td></tr>
+</tbody></table></div>
+<p>The evidential follows the aspect and precedes agreement. After a vowel, <em>-i</em> becomes <em>-y</em>; after <em>-wa</em>, the sequence contracts to <em>-way</em>.</p>
+<ul>
+<li><em>Wāy-i-Ø.</em> → <em>Wāyi.</em> "He came — I saw him."</li>
+<li><em>Wāy-yu-Ø.</em> → <em>Wāyyu.</em> "He came — I heard him."</li>
+<li><em>Wāy-ka-Ø.</em> → <em>Wāyka.</em> "He must have come — I infer it."</li>
+<li><em>Wāy-šu-Ø.</em> → <em>Wāyšu.</em> "He came, they say."</li>
+<li><em>Wāy-Ø.</em> → <em>Wāy.</em> "He came, of course."</li>
+</ul>
+<p>The choice is pragmatic, not syntactic. A speaker who did not witness an event but has no reason to doubt it may use the assumed form; a speaker reporting a rumour uses <em>-šu</em>; a speaker who saw the wet ground uses <em>-ka</em>. In stories, the visual is the default for the narrative present, while the reported is used for events outside the narrator's experience.</p>
+<p>Evidentials are not used in imperatives, optatives, or converbs.</p>
+<h3 id="6-4-agreement">6.4 Agreement</h3>
+<p>The verb agrees with the <strong>absolutive</strong> argument (the subject of an intransitive, the object of a transitive) and, if the clause is transitive, with the <strong>ergative</strong> argument as well. The ergative suffix comes first, then the absolutive.</p>
+<p><strong>Ergative suffixes</strong> (transitive subject):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Person</th><th>Suffix</th></tr></thead>
+<tbody>
+<tr><td>1SG</td><td>-ni</td></tr>
+<tr><td>2SG</td><td>-ti</td></tr>
+<tr><td>3SG</td><td>-ši</td></tr>
+<tr><td>1PL</td><td>-mi</td></tr>
+<tr><td>2PL</td><td>-ci</td></tr>
+<tr><td>3PL</td><td>-ri</td></tr>
+</tbody></table></div>
+<p><strong>Absolutive suffixes</strong> (intransitive subject or transitive object):</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Person</th><th>Suffix</th></tr></thead>
+<tbody>
+<tr><td>1SG</td><td>-n</td></tr>
+<tr><td>2SG</td><td>-t</td></tr>
+<tr><td>3SG</td><td>-Ø</td></tr>
+<tr><td>1PL</td><td>-m</td></tr>
+<tr><td>2PL</td><td>-c</td></tr>
+<tr><td>3PL</td><td>-r</td></tr>
+</tbody></table></div>
+<p>Examples:</p>
+<ul>
+<li><em>Xar-i-ni-Ø.</em> "I saw it."</li>
+<li><em>Xar-i-ši-n.</em> "He saw me."</li>
+<li><em>Xar-i-mi-c.</em> "We saw you (pl)."</li>
+<li><em>Xar-i-ci-r.</em> "You (pl) saw them."</li>
+<li><em>Wāy-i-n.</em> "I came."</li>
+<li><em>Wāy-i-r.</em> "They came."</li>
+</ul>
+<p>The third-person singular absolutive is zero, so an intransitive verb with a third-person subject ends in the evidential: <em>wāyi</em> "he came". A transitive verb with third-person subject and object ends in the ergative suffix: <em>xariši</em> "he saw it".</p>
+<h3 id="6-5-mood">6.5 Mood</h3>
+<p>The indicative is unmarked. The other moods are:</p>
+<ul>
+<li><strong>Imperative.</strong> Suffix <strong>-a</strong> (2SG), <strong>-aya</strong> (2PL). No evidential, no agreement.</li>
+<li><em>Yut-a!</em> "Go!"</li>
+<li><em>Yut-aya!</em> "Go, all of you!"</li>
+<li><em>Qʼan-a!</em> "Listen!"</li>
+<li><strong>Prohibitive.</strong> The negative prefix with the imperative: <em>U-yut-a!</em> "Don't go!"</li>
+<li><strong>Optative.</strong> Suffix <strong>-šay</strong>: <em>Yut-šay.</em> "May he go."</li>
+<li><strong>Conditional.</strong> The particle <strong>kʼu</strong> at the head of the clause: <em>Kʼu yut-wa-t, xar-lo-ni-Ø.</em> "If you go, I will see it."</li>
+</ul>
+<p>The conditional particle is not a suffix; it is a clitic that precedes the verb. The apodosis is unmarked.</p>
+<h3 id="6-6-valency-and-derivation">6.6 Valency and derivation</h3>
+<p>Šiqʼāl has a productive set of valency-changing suffixes. They occupy slot 3, before aspect.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Suffix</th><th>Function</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>-tʼi</td><td>causative</td><td><em>qʼen</em> "die" → <em>qʼentʼi</em> "kill"</td></tr>
+<tr><td>-na</td><td>passive / anticausative</td><td><em>xar</em> "see" → <em>xarna</em> "be seen"</td></tr>
+<tr><td>-ma</td><td>antipassive</td><td><em>xar</em> "see" → <em>xarma</em> "look, be looking"</td></tr>
+<tr><td>-pʼi</td><td>reflexive</td><td><em>xar</em> "see" → <em>xarpʼi</em> "see oneself"</td></tr>
+<tr><td>-ya</td><td>reciprocal</td><td><em>xar</em> "see" → <em>xarya</em> "see each other"</td></tr>
+<tr><td>-ul</td><td>desiderative</td><td><em>yut</em> "go" → <em>yutul</em> "want to go"</td></tr>
+<tr><td>-kʰu</td><td>abilitive</td><td><em>yut</em> "go" → <em>yutkʰu</em> "be able to go"</td></tr>
+</tbody></table></div>
+<p><strong>Causative.</strong> The causee becomes the absolutive object; the original agent, if it is expressed, takes the dative.</p>
+<ul>
+<li><em>Qʼen-tʼi-i-ši-Ø tʰeriš kʼur.</em> "The man killed the horse." (literally "caused the horse to die")</li>
+</ul>
+<p><strong>Passive.</strong> The patient becomes the absolutive subject; the agent is omitted or marked with the ablative.</p>
+<ul>
+<li><em>Xar-na-i-Ø kāla.</em> "The house was seen."</li>
+<li><em>Xar-na-i-Ø kāla tʰer-tar.</em> "The house was seen by the man."</li>
+</ul>
+<p><strong>Antipassive.</strong> The agent becomes the absolutive subject, and the object — if present — takes the dative. The antipassive is used when the object is indefinite or unimportant, and it is a common way to relativise an agent.</p>
+<ul>
+<li><em>Xar-ma-i-Ø tʰer.</em> "The man was looking."</li>
+<li><em>Xar-ma-i-Ø tʰer kālakha.</em> "The man was looking at the house."</li>
+</ul>
+<p><strong>Reflexive and reciprocal.</strong> These detransitivise the verb; the subject is absolutive.</p>
+<ul>
+<li><em>Xar-pʼi-i-Ø tʰer.</em> "The man saw himself."</li>
+<li><em>Xar-ya-r.</em> "They saw each other."</li>
+</ul>
+<p><strong>Desiderative and abilitive.</strong></p>
+<ul>
+<li><em>Yut-ul-wa-n.</em> "I want to go."</li>
+<li><em>Yut-kʰu-wa-n.</em> "I can go."</li>
+<li><em>U-yut-kʰu-wa-n.</em> "I cannot go."</li>
+</ul>
+<h3 id="6-7-negation">6.7 Negation</h3>
+<p>Negation is expressed by the prefix <strong>u-</strong> on the verb. The prefix triggers lenition of a following stop or affricate, and it precedes the root, before all derivational suffixes.</p>
+<ul>
+<li><em>U-wāy-i-Ø.</em> "He did not come."</li>
+<li><em>U-xar-i-ni-Ø.</em> "I did not see it."</li>
+<li><em>U-kʰen-i-ši-Ø.</em> → <em>Ukeniši.</em> "He did not say it."</li>
+<li><em>U-pʰan-wa-n.</em> → <em>Upanwan.</em> "I am not working."</li>
+</ul>
+<p>Negative existence and possession use the particle <strong>uma</strong>:</p>
+<ul>
+<li><em>Uma kāla.</em> "There is no house."</li>
+<li><em>Uma nakha kāla.</em> "I have no house."</li>
+</ul>
+<p>The difference between <em>u-</em> and <em>uma</em> is that <em>u-</em> negates a verb, while <em>uma</em> negates the existence of a noun phrase. A sentence like <em>uma yutwan</em> is ungrammatical; one says <em>uyutwan</em> "I am not going".</p>
+<h3 id="6-8-existentials-and-possession">6.8 Existentials and possession</h3>
+<p>The verb <strong>tʼa</strong> means "be, exist". It is used for existence, location, and possession.</p>
+<ul>
+<li><em>Tʼa-i-Ø kāla.</em> → <em>Tʼay kāla.</em> "There is a house."</li>
+<li><em>Tʼa-i-Ø kāla kālyami.</em> → <em>Tʼay kāla kālyami.</em> "There is a house in the village."</li>
+<li><em>Tʼa-i-Ø nakha kāla.</em> → <em>Tʼay nakha kāla.</em> "I have a house." (literally "there is a house to me")</li>
+</ul>
+<p>The possessed noun is absolutive; the possessor is dative. Negation with <em>uma</em> gives "have no":</p>
+<ul>
+<li><em>Uma nakha kāla.</em> "I have no house."</li>
+</ul>
+<p>Nominal predicates need no copula:</p>
+<ul>
+<li><em>Šiqʼa sa.</em> "He is a person."</li>
+<li><em>Šiqʼa sa ma?</em> "Is he a person?"</li>
+</ul>
+<p>Location is expressed either with the locative case or with the preposition <em>a</em>:</p>
+<ul>
+<li><em>Tʼay tʰer kālami.</em> "The man is in the house."</li>
+<li><em>Yut-wa-Ø tʰer a gāla.</em> "The man is going to the house."</li>
+</ul>
+<hr>
+<h2 id="7-syntax">7. Syntax</h2>
+<h3 id="7-1-clause-structure-and-word-order">7.1 Clause structure and word order</h3>
+<p>The basic order is <strong>VSO</strong>: verb, subject, object. The language is strongly head-initial: nouns precede adjectives, genitives, and relative clauses; prepositions precede their objects; numerals and demonstratives precede the noun.</p>
+<p>A transitive clause:</p>
+<ul>
+<li><em>Xar-i-ši-Ø tʰeriš kāla.</em> "The man saw the house."</li>
+</ul>
+<p>An intransitive clause:</p>
+<ul>
+<li><em>Wāy-i-Ø tʰer.</em> "The man came."</li>
+</ul>
+<p>An oblique argument follows the object:</p>
+<ul>
+<li><em>Tʼāni-i-ši-Ø tʰeriš kāla nīsakha.</em> "The man gave the house to the woman."</li>
+</ul>
+<p>Word order is pragmatically flexible. The verb may be preceded by a fronted topic, and the subject may be postponed for emphasis, but VSO is the unmarked order and the one used in narrative.</p>
+<h3 id="7-2-ergativity">7.2 Ergativity</h3>
+<p>Šiqʼāl is ergative–absolutive in both case marking and agreement. The single argument of an intransitive verb and the object of a transitive verb share the absolutive; the agent of a transitive verb takes the ergative.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Clause</th><th>A</th><th>S</th><th>O</th></tr></thead>
+<tbody>
+<tr><td><em>Wāyi tʰer.</em> "The man came."</td><td></td><td>ABS <em>tʰer</em></td><td></td></tr>
+<tr><td><em>Xariši tʰeriš kāla.</em> "The man saw the house."</td><td>ERG <em>tʰeriš</em></td><td></td><td>ABS <em>kāla</em></td></tr>
+<tr><td><em>Xariši tʰer.</em> "He saw the man."</td><td></td><td></td><td>ABS <em>tʰer</em></td></tr>
+</tbody></table></div>
+<p>The verb agrees accordingly: <em>wāyi</em> has only an absolutive suffix (zero), while <em>xariši</em> has an ergative suffix <em>-ši</em> and a zero absolutive.</p>
+<p>Ergativity is consistent across aspects and moods; there is no split conditioned by tense or aspect. The antipassive is the main exception: it promotes the agent to absolutive and demotes the object to dative, producing an accusative-like pattern in that construction.</p>
+<h3 id="7-3-questions">7.3 Questions</h3>
+<p><strong>Polar questions</strong> are marked by the particle <strong>ma</strong> at the end of the clause:</p>
+<ul>
+<li><em>Xar-i-ti-Ø taš sa ma?</em> "Did you see him?"</li>
+<li><em>Yut-wa-t ma?</em> "Are you going?"</li>
+</ul>
+<p><strong>Content questions</strong> normally leave the interrogative word in situ, where the corresponding argument or adjunct would be:</p>
+<ul>
+<li><em>Xar-i-ti-Ø taš kʰa?</em> "Who did you see?"</li>
+<li><em>Wāy-i-Ø kʰa?</em> "Who came?"</li>
+<li><em>Yut-wa-t kʰan?</em> "Where are you going?"</li>
+<li><em>Tʰana wāy-i-Ø?</em> "When did he come?"</li>
+<li><em>Kʰaru u-wāy-i-t?</em> "Why didn't you come?"</li>
+<li><em>Tʼar kʼur?</em> "How many horses?"</li>
+</ul>
+<p>The interrogative words are <em>kʰa</em> "who", <em>kʰu</em> "what", <em>kʰan</em> "where", <em>tʰana</em> "when", <em>kʰaru</em> "why", <em>kʰar</em> "how", <em>tʼar</em> "how many".</p>
+<p>A questioned subject may be fronted for emphasis, especially in formal or literary style: <em>Kʰa tʼay de yuti a qʼāla?</em> "Who is it that goes to the sky?"</p>
+<h3 id="7-4-relative-clauses">7.4 Relative clauses</h3>
+<p>Relative clauses follow the noun and are introduced by the particle <strong>de</strong>. The relativised argument is a gap; the verb retains its agreement with the gap, which is a useful cue to its role.</p>
+<ul>
+<li><em>šiqʼa de wāy-i-Ø</em> "the person who came"</li>
+<li><em>kāla de kʼal-i-ni-Ø</em> "the house that I built"</li>
+<li><em>tʰer de kʼal-i-ši-Ø kāla</em> "the man who built the house"</li>
+<li><em>kʼur de xar-i-ni-Ø</em> "the horse that I saw"</li>
+</ul>
+<p>When the relativised argument is the agent of a transitive verb, the antipassive is common, especially if the object is indefinite:</p>
+<ul>
+<li><em>tʰer de xar-ma-i-Ø</em> "the man who was looking"</li>
+</ul>
+<p>With a definite object, the plain verb is usual, as in <em>tʰer de kʼal-i-ši-Ø kāla</em> above.</p>
+<p>Relative clauses are not marked for definiteness; <em>šiqʼa de wāyi</em> can mean "a person who came" or "the person who came" according to context.</p>
+<h3 id="7-5-complement-clauses-and-converbs">7.5 Complement clauses and converbs</h3>
+<p>Complement clauses are introduced by <strong>de</strong>, the same particle as relative clauses. The complement clause is the object of the matrix verb.</p>
+<ul>
+<li><em>Cʼar-i-ni-Ø de wāy-i-Ø sa.</em> "I know that he came."</li>
+<li><em>Xar-wa-i-ni-Ø de kʼal-wa-i-ši-Ø pātaš kāla.</em> "I see that the master is building a house."</li>
+</ul>
+<p>The verb of the complement clause is fully inflected. There is no infinitive; "want to go" is expressed with the desiderative suffix, not with a complement clause:</p>
+<ul>
+<li><em>Yut-ul-wa-n.</em> "I want to go." (not <em>pʼal-wa-n de yut-wa-n</em>)</li>
+</ul>
+<p><strong>Converbs.</strong> The suffix <strong>-te</strong> on a bare stem marks a same-subject medial clause: "having done X, ...". It carries no evidential or agreement.</p>
+<ul>
+<li><em>Qʼan-te sa, pʼer-i-Ø pʼen.</em> "Having heard this, the sheep fled."</li>
+<li><em>Wāy-i-te, xar-i-ši-Ø tʰeriš kāla.</em> "He came and saw the house."</li>
+</ul>
+<h3 id="7-6-coordination">7.6 Coordination</h3>
+<p>Noun phrases are coordinated with the enclitic <strong>-ya</strong> "and", attached to the first conjunct, and <strong>xu</strong> "or" between the conjuncts:</p>
+<ul>
+<li><em>Tʰer-ya nīsa</em> "the man and the woman"</li>
+<li><em>Tʰer xu nīsa</em> "the man or the woman"</li>
+</ul>
+<p>Clauses are simply juxtaposed, or linked with <em>ya</em>:</p>
+<ul>
+<li><em>Wāy-i-Ø tʰer, ya xar-i-ši-Ø kāla.</em> "The man came, and he saw the house."</li>
+</ul>
+<p>The particle <strong>xu</strong> can also coordinate clauses: <em>Yut-wa-n xu sūl-wa-n?</em> "Shall I go or stay?"</p>
+<h3 id="7-7-information-structure">7.7 Information structure</h3>
+<p>The unmarked order is VSO, but the clause-initial position is a topic position. A fronted constituent is interpreted as topic or contrastive focus:</p>
+<ul>
+<li><em>Kāla, xar-i-ši-Ø tʰeriš.</em> "The house — the man saw it."</li>
+<li><em>Na, u-yut-wa-n.</em> "Me, I'm not going."</li>
+</ul>
+<p>New information tends to stay in situ, towards the end of the clause. The particle <em>de</em> can also mark a focused complement: <em>De sa xar-i-ni-Ø.</em> "It's <strong>this</strong> that I saw." This is a literary construction and rare in speech.</p>
+<hr>
+<h2 id="8-word-formation">8. Word formation</h2>
+<p>Šiqʼāl is agglutinating and highly productive. Most new vocabulary is coined from existing roots with the suffixes below.</p>
+<h3 id="8-1-nominal-suffixes">8.1 Nominal suffixes</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Suffix</th><th>Function</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>-āl</td><td>abstract noun</td><td><em>šiqʼ</em> "speak" → <em>šiqʼāl</em> "language"</td></tr>
+<tr><td>-i</td><td>agent, habitual doer</td><td><em>kʼal</em> "build" → <em>kʼali</em> "builder"</td></tr>
+<tr><td>-u</td><td>active participle</td><td><em>kʼal</em> "build" → <em>kʼalu</em> "building, one who builds"</td></tr>
+<tr><td>-mi</td><td>place of the action</td><td><em>kʼal</em> "build" → <em>kʼalmi</em> "building site"</td></tr>
+<tr><td>-ca</td><td>instrument</td><td><em>kʼal</em> "build" → <em>kʼalca</em> "tool"</td></tr>
+<tr><td>-kʼa</td><td>diminutive</td><td><em>kāla</em> "house" → <em>kālakʼa</em> "hut"</td></tr>
+<tr><td>-xan</td><td>augmentative</td><td><em>kāla</em> "house" → <em>kālaxan</em> "mansion"</td></tr>
+<tr><td>-ya</td><td>collective</td><td><em>tʰūl</em> "tree" → <em>tʰūlya</em> "forest"</td></tr>
+<tr><td>-tʼa</td><td>result, product</td><td><em>kʼal</em> "build" → <em>kʼaltʼa</em> "building, construction"</td></tr>
+</tbody></table></div>
+<h3 id="8-2-verbal-suffixes">8.2 Verbal suffixes</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Suffix</th><th>Function</th><th>Example</th></tr></thead>
+<tbody>
+<tr><td>-tʼi</td><td>causative</td><td><em>qʼen</em> "die" → <em>qʼentʼi</em> "kill"</td></tr>
+<tr><td>-na</td><td>passive</td><td><em>xar</em> "see" → <em>xarna</em> "be seen"</td></tr>
+<tr><td>-ma</td><td>antipassive</td><td><em>xar</em> "see" → <em>xarma</em> "look"</td></tr>
+<tr><td>-pʼi</td><td>reflexive</td><td><em>xar</em> "see" → <em>xarpʼi</em> "see oneself"</td></tr>
+<tr><td>-ya</td><td>reciprocal</td><td><em>xar</em> "see" → <em>xarya</em> "see each other"</td></tr>
+<tr><td>-ul</td><td>desiderative</td><td><em>yut</em> "go" → <em>yutul</em> "want to go"</td></tr>
+<tr><td>-kʰu</td><td>abilitive</td><td><em>yut</em> "go" → <em>yutkʰu</em> "be able to go"</td></tr>
+</tbody></table></div>
+<h3 id="8-3-compounds">8.3 Compounds</h3>
+<p>Noun–noun compounds are head-final: the second element is the head.</p>
+<ul>
+<li><em>kāla</em> "house" + <em>yuta</em> "path" → <em>kālayuta</em> "house path, street"</li>
+<li><em>mā</em> "water" + <em>kʼur</em> "horse" → <em>mākʼur</em> "water horse, hippopotamus" (a learned coinage)</li>
+<li><em>tʰawa</em> "sun" + <em>tʼāla</em> "light" → <em>tʰawatʼāla</em> "sunlight"</li>
+</ul>
+<p>Verb–noun compounds are also common: <em>xūl</em> "heart" + <em>qʼen</em> "die" → <em>xūlqʼen</em> "forget" (literally "the heart dies").</p>
+<h3 id="8-4-a-worked-family">8.4 A worked family</h3>
+<p>From <em>kʼal</em> "build, make":</p>
+<ul>
+<li><em>kʼal</em> — build</li>
+<li><em>kʼali</em> — builder</li>
+<li><em>kʼalu</em> — one who builds, builder (agentive participle)</li>
+<li><em>kʼalāl</em> — construction, the art of building</li>
+<li><em>kʼalmi</em> — building site, workshop</li>
+<li><em>kʼalca</em> — tool</li>
+<li><em>kʼaltʼa</em> — a building, the thing built</li>
+<li><em>kʼaltʼi</em> — cause to build, have built</li>
+<li><em>kʼalkʰu</em> — be able to build</li>
+<li><em>kʼalul</em> — want to build</li>
+</ul>
+<p>From <em>šiqʼ</em> "speak":</p>
+<ul>
+<li><em>šiqʼ</em> — speak</li>
+<li><em>šiqʼa</em> — person, speaker</li>
+<li><em>šiqʼi</em> — speaker, orator</li>
+<li><em>šiqʼāl</em> — speech, language</li>
+<li><em>šiqʼmi</em> — place of speaking, assembly ground</li>
+</ul>
+<hr>
+<h2 id="9-lexicon">9. Lexicon</h2>
+<p>The lexicon below is a core vocabulary of 227 roots and words, arranged by semantic field. It is not exhaustive: the derivational machinery of §8 allows the formation of thousands of additional words, and the texts in §10 use a number of regular derivations that are not listed separately.</p>
+
+<div class="lex-search">
+  <label for="lexfilter">Search the lexicon</label>
+  <input id="lexfilter" type="search" placeholder="e.g. water, heart, go, mountain…" autocomplete="off">
+  <span id="lexcount" class="lex-count"></span>
+</div>
+<h3 id="9-1-the-lexicon-by-field">9.1 The lexicon by field</h3>
+<p>Parts of speech are abbreviated as in the glosses: <em>n.</em> noun, <em>v.</em> verb (including stative verbs), <em>num.</em> numeral, <em>adv.</em> adverb, <em>part.</em> particle, <em>conj.</em> conjunction, <em>prep.</em> preposition, <em>pron.</em> pronoun, <em>pref.</em> prefix, <em>suf.</em> suffix.</p>
+<h4 id="the-body">The body</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>kʰer</em></td><td>body</td><td>n.</td></tr>
+<tr><td><em>kʼer</em></td><td>tooth</td><td>n.</td></tr>
+<tr><td><em>lāpʼa</em></td><td>tongue</td><td>n.</td></tr>
+<tr><td><em>mąk</em></td><td>hand</td><td>n.</td></tr>
+<tr><td><em>nāma</em></td><td>name</td><td>n.</td></tr>
+<tr><td><em>pʰer</em></td><td>skin</td><td>n.</td></tr>
+<tr><td><em>pʼin</em></td><td>nose</td><td>n.</td></tr>
+<tr><td><em>qʰal</em></td><td>head</td><td>n.</td></tr>
+<tr><td><em>qʼar</em></td><td>bone</td><td>n.</td></tr>
+<tr><td><em>sīpʼa</em></td><td>hair</td><td>n.</td></tr>
+<tr><td><em>sūn</em></td><td>blood</td><td>n.</td></tr>
+<tr><td><em>sūq</em></td><td>ear</td><td>n.</td></tr>
+<tr><td><em>tʼan</em></td><td>foot</td><td>n.</td></tr>
+<tr><td><em>tʼį</em></td><td>eye</td><td>n.</td></tr>
+<tr><td><em>xūl</em></td><td>heart</td><td>n.</td></tr>
+<tr><td><em>yān</em></td><td>mouth</td><td>n.</td></tr>
+</tbody></table></div>
+<h4 id="people-and-kin">People and kin</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>ama</em></td><td>mother</td><td>n.</td></tr>
+<tr><td><em>axa</em></td><td>father</td><td>n.</td></tr>
+<tr><td><em>kųl</em></td><td>child</td><td>n.</td></tr>
+<tr><td><em>kʼama</em></td><td>servant</td><td>n.</td></tr>
+<tr><td><em>mīna</em></td><td>sister</td><td>n.</td></tr>
+<tr><td><em>nīsa</em></td><td>woman</td><td>n.</td></tr>
+<tr><td><em>pāra</em></td><td>brother</td><td>n.</td></tr>
+<tr><td><em>pāta</em></td><td>master, lord</td><td>n.</td></tr>
+<tr><td><em>qʰun</em></td><td>chief</td><td>n.</td></tr>
+<tr><td><em>sāxa</em></td><td>friend</td><td>n.</td></tr>
+<tr><td><em>šiqʼa</em></td><td>person, speaker</td><td>n.</td></tr>
+<tr><td><em>šiqʼar</em></td><td>people, the Šiqʼar</td><td>n.</td></tr>
+<tr><td><em>tʰer</em></td><td>man</td><td>n.</td></tr>
+<tr><td><em>yūxa</em></td><td>stranger</td><td>n.</td></tr>
+</tbody></table></div>
+<h4 id="the-natural-world">The natural world</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>ciru</em></td><td>rain</td><td>n.</td></tr>
+<tr><td><em>kūr</em></td><td>field, plain</td><td>n.</td></tr>
+<tr><td><em>kʼun</em></td><td>seed</td><td>n.</td></tr>
+<tr><td><em>mā</em></td><td>water</td><td>n.</td></tr>
+<tr><td><em>mīl</em></td><td>moon; month</td><td>n.</td></tr>
+<tr><td><em>mūxa</em></td><td>darkness</td><td>n.</td></tr>
+<tr><td><em>nāwa</em></td><td>river</td><td>n.</td></tr>
+<tr><td><em>nūxa</em></td><td>night</td><td>n.</td></tr>
+<tr><td><em>pʰīna</em></td><td>snow</td><td>n.</td></tr>
+<tr><td><em>pʼesu</em></td><td>cloud</td><td>n.</td></tr>
+<tr><td><em>pʼexa</em></td><td>smoke</td><td>n.</td></tr>
+<tr><td><em>qʰara</em></td><td>mountain</td><td>n.</td></tr>
+<tr><td><em>quna</em></td><td>spring, well</td><td>n.</td></tr>
+<tr><td><em>qʼal</em></td><td>leaf</td><td>n.</td></tr>
+<tr><td><em>qʼāla</em></td><td>sky</td><td>n.</td></tr>
+<tr><td><em>šipʼa</em></td><td>flower</td><td>n.</td></tr>
+<tr><td><em>siron</em></td><td>star</td><td>n.</td></tr>
+<tr><td><em>sūra</em></td><td>day</td><td>n.</td></tr>
+<tr><td><em>tēra</em></td><td>earth, soil</td><td>n.</td></tr>
+<tr><td><em>tʰara</em></td><td>year</td><td>n.</td></tr>
+<tr><td><em>tʰawa</em></td><td>sun</td><td>n.</td></tr>
+<tr><td><em>tʰūl</em></td><td>tree</td><td>n.</td></tr>
+<tr><td><em>tʼāla</em></td><td>light; joy</td><td>n.</td></tr>
+<tr><td><em>tʼara</em></td><td>stone</td><td>n.</td></tr>
+<tr><td><em>tʼāya</em></td><td>sea</td><td>n.</td></tr>
+<tr><td><em>tʼer</em></td><td>root</td><td>n.</td></tr>
+<tr><td><em>wāxa</em></td><td>wind</td><td>n.</td></tr>
+<tr><td><em>yāsu</em></td><td>grass</td><td>n.</td></tr>
+<tr><td><em>ʼasa</em></td><td>fire</td><td>n.</td></tr>
+</tbody></table></div>
+<h4 id="animals-and-animal-products">Animals and animal products</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>cʼīra</em></td><td>bird</td><td>n.</td></tr>
+<tr><td><em>kʰų</em></td><td>dog</td><td>n.</td></tr>
+<tr><td><em>kʼur</em></td><td>horse</td><td>n.</td></tr>
+<tr><td><em>mukʰa</em></td><td>fish</td><td>n.</td></tr>
+<tr><td><em>mūsa</em></td><td>cow</td><td>n.</td></tr>
+<tr><td><em>mūsu</em></td><td>milk</td><td>n.</td></tr>
+<tr><td><em>pʼen</em></td><td>sheep</td><td>n.</td></tr>
+<tr><td><em>pʼenya</em></td><td>wool</td><td>n.</td></tr>
+<tr><td><em>qʼama</em></td><td>animal</td><td>n.</td></tr>
+<tr><td><em>tʼēsa</em></td><td>meat</td><td>n.</td></tr>
+<tr><td><em>tʼur</em></td><td>wolf</td><td>n.</td></tr>
+</tbody></table></div>
+<h4 id="food-and-drink">Food and drink</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>lāpa</em></td><td>honey</td><td>n.</td></tr>
+<tr><td><em>sāmu</em></td><td>salt</td><td>n.</td></tr>
+<tr><td><em>sūxa</em></td><td>drink</td><td>v.</td></tr>
+<tr><td><em>tʰap</em></td><td>grain</td><td>n.</td></tr>
+<tr><td><em>tʰapa</em></td><td>bread</td><td>n.</td></tr>
+<tr><td><em>ʼam</em></td><td>eat</td><td>v.</td></tr>
+</tbody></table></div>
+<h4 id="motion-and-location">Motion and location</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>cūr</em></td><td>pull, drive</td><td>v.</td></tr>
+<tr><td><em>cʼāl</em></td><td>climb</td><td>v.</td></tr>
+<tr><td><em>cʼir</em></td><td>run</td><td>v.</td></tr>
+<tr><td><em>kʰam</em></td><td>follow</td><td>v.</td></tr>
+<tr><td><em>kʼāp</em></td><td>take</td><td>v.</td></tr>
+<tr><td><em>kʼāt</em></td><td>catch</td><td>v.</td></tr>
+<tr><td><em>kʼāxa</em></td><td>move</td><td>v.</td></tr>
+<tr><td><em>nāxa</em></td><td>swim</td><td>v.</td></tr>
+<tr><td><em>pʼāk</em></td><td>arrive</td><td>v.</td></tr>
+<tr><td><em>pʼan</em></td><td>walk</td><td>v.</td></tr>
+<tr><td><em>pʼāxa</em></td><td>throw</td><td>v.</td></tr>
+<tr><td><em>pʼel</em></td><td>fall</td><td>v.</td></tr>
+<tr><td><em>pʼer</em></td><td>flee</td><td>v.</td></tr>
+<tr><td><em>pʼir</em></td><td>fly</td><td>v.</td></tr>
+<tr><td><em>qʼap</em></td><td>hold</td><td>v.</td></tr>
+<tr><td><em>qʼel</em></td><td>rise</td><td>v.</td></tr>
+<tr><td><em>qʼem</em></td><td>stop</td><td>v.</td></tr>
+<tr><td><em>sūl</em></td><td>wait</td><td>v.</td></tr>
+<tr><td><em>tʰun</em></td><td>push</td><td>v.</td></tr>
+<tr><td><em>tūxa</em></td><td>return</td><td>v.</td></tr>
+<tr><td><em>tʼāni</em></td><td>give</td><td>v.</td></tr>
+<tr><td><em>tʼum</em></td><td>enter</td><td>v.</td></tr>
+<tr><td><em>wāy</em></td><td>come</td><td>v.</td></tr>
+<tr><td><em>wāytʼi</em></td><td>bring</td><td>v.</td></tr>
+<tr><td><em>wuxa</em></td><td>exit</td><td>v.</td></tr>
+<tr><td><em>xūp</em></td><td>descend</td><td>v.</td></tr>
+<tr><td><em>yāp</em></td><td>carry</td><td>v.</td></tr>
+<tr><td><em>yut</em></td><td>go</td><td>v.</td></tr>
+<tr><td><em>yuttʼi</em></td><td>send</td><td>v.</td></tr>
+<tr><td><em>ʼel</em></td><td>leave</td><td>v.</td></tr>
+</tbody></table></div>
+<h4 id="perception-and-cognition">Perception and cognition</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>cʼar</em></td><td>know</td><td>v.</td></tr>
+<tr><td><em>lām</em></td><td>taste</td><td>v.</td></tr>
+<tr><td><em>mīca</em></td><td>think</td><td>v.</td></tr>
+<tr><td><em>pʰu</em></td><td>smell</td><td>v.</td></tr>
+<tr><td><em>qʼan</em></td><td>hear</td><td>v.</td></tr>
+<tr><td><em>tʼak</em></td><td>touch</td><td>v.</td></tr>
+<tr><td><em>xar</em></td><td>see</td><td>v.</td></tr>
+<tr><td><em>xūla</em></td><td>remember</td><td>v.</td></tr>
+<tr><td><em>xūlqʼen</em></td><td>forget</td><td>v.</td></tr>
+</tbody></table></div>
+<h4 id="speech-and-sound">Speech and sound</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>kʰen</em></td><td>say</td><td>v.</td></tr>
+<tr><td><em>kʰentʼi</em></td><td>tell</td><td>v.</td></tr>
+<tr><td><em>lāli</em></td><td>sing</td><td>v.</td></tr>
+<tr><td><em>pʰar</em></td><td>read</td><td>v.</td></tr>
+<tr><td><em>pʼīt</em></td><td>ask</td><td>v.</td></tr>
+<tr><td><em>qʼā</em></td><td>call</td><td>v.</td></tr>
+<tr><td><em>qʼas</em></td><td>answer</td><td>v.</td></tr>
+<tr><td><em>qʼāxa</em></td><td>shout</td><td>v.</td></tr>
+<tr><td><em>šiqʼ</em></td><td>speak</td><td>v.</td></tr>
+<tr><td><em>sīr</em></td><td>write</td><td>v.</td></tr>
+<tr><td><em>sīsa</em></td><td>whisper</td><td>v.</td></tr>
+</tbody></table></div>
+<h4 id="emotion">Emotion</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>cʼin</em></td><td>cry</td><td>v.</td></tr>
+<tr><td><em>mīsa</em></td><td>hate</td><td>v.</td></tr>
+<tr><td><em>pʼal</em></td><td>want</td><td>v.</td></tr>
+<tr><td><em>pʼāla</em></td><td>hope</td><td>v.</td></tr>
+<tr><td><em>qʼor</em></td><td>fear</td><td>v.</td></tr>
+<tr><td><em>sūm</em></td><td>be sad</td><td>v.</td></tr>
+<tr><td><em>tʼema</em></td><td>be angry</td><td>v.</td></tr>
+<tr><td><em>tʼīxa</em></td><td>ache, hurt</td><td>v.</td></tr>
+<tr><td><em>xāma</em></td><td>love</td><td>v.</td></tr>
+<tr><td><em>xāxa</em></td><td>laugh</td><td>v.</td></tr>
+</tbody></table></div>
+<h4 id="quality-and-dimension">Quality and dimension</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>cīra</em></td><td>clean</td><td>v.</td></tr>
+<tr><td><em>kʼa</em></td><td>small</td><td>v.</td></tr>
+<tr><td><em>kʼara</em></td><td>bad</td><td>v.</td></tr>
+<tr><td><em>kʼatʼa</em></td><td>strong</td><td>v.</td></tr>
+<tr><td><em>kʼes</em></td><td>short</td><td>v.</td></tr>
+<tr><td><em>kʼūra</em></td><td>dirty</td><td>v.</td></tr>
+<tr><td><em>lāma</em></td><td>slow</td><td>v.</td></tr>
+<tr><td><em>mūk</em></td><td>empty</td><td>v.</td></tr>
+<tr><td><em>nāpa</em></td><td>new</td><td>v.</td></tr>
+<tr><td><em>nīma</em></td><td>weak</td><td>v.</td></tr>
+<tr><td><em>pʰā</em></td><td>hot, warm</td><td>v.</td></tr>
+<tr><td><em>pʰal</em></td><td>big</td><td>v.</td></tr>
+<tr><td><em>pʼīla</em></td><td>light (weight)</td><td>v.</td></tr>
+<tr><td><em>qʰam</em></td><td>heavy</td><td>v.</td></tr>
+<tr><td><em>qʼasa</em></td><td>true</td><td>v.</td></tr>
+<tr><td><em>qʼema</em></td><td>old</td><td>v.</td></tr>
+<tr><td><em>sāma</em></td><td>good</td><td>v.</td></tr>
+<tr><td><em>sīra</em></td><td>cold</td><td>v.</td></tr>
+<tr><td><em>tʰāna</em></td><td>long</td><td>v.</td></tr>
+<tr><td><em>tūma</em></td><td>fast, quick</td><td>v.</td></tr>
+<tr><td><em>tʼāp</em></td><td>full</td><td>v.</td></tr>
+</tbody></table></div>
+<h4 id="states-and-postures">States and postures</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>kʼas</em></td><td>wake</td><td>v.</td></tr>
+<tr><td><em>kʼem</em></td><td>sit</td><td>v.</td></tr>
+<tr><td><em>mīr</em></td><td>sleep</td><td>v.</td></tr>
+<tr><td><em>qʼen</em></td><td>die</td><td>v.</td></tr>
+<tr><td><em>sūp</em></td><td>lie down</td><td>v.</td></tr>
+<tr><td><em>tʰu</em></td><td>stand</td><td>v.</td></tr>
+<tr><td><em>ʼūl</em></td><td>live, be alive</td><td>v.</td></tr>
+</tbody></table></div>
+<h4 id="society-craft-and-war">Society, craft, and war</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>cʼur</em></td><td>hunt</td><td>v.</td></tr>
+<tr><td><em>kāla</em></td><td>house</td><td>n.</td></tr>
+<tr><td><em>kālya</em></td><td>village</td><td>n.</td></tr>
+<tr><td><em>kʰām</em></td><td>load</td><td>n.</td></tr>
+<tr><td><em>kʼal</em></td><td>build, make</td><td>v.</td></tr>
+<tr><td><em>māca</em></td><td>help</td><td>v.</td></tr>
+<tr><td><em>mek</em></td><td>count</td><td>v.</td></tr>
+<tr><td><em>nāka</em></td><td>garment</td><td>n.</td></tr>
+<tr><td><em>pʰan</em></td><td>work</td><td>v.</td></tr>
+<tr><td><em>pʼā</em></td><td>open</td><td>v.</td></tr>
+<tr><td><em>pʼū</em></td><td>cook</td><td>v.</td></tr>
+<tr><td><em>pʼūsa</em></td><td>wash</td><td>v.</td></tr>
+<tr><td><em>qʼum</em></td><td>close</td><td>v.</td></tr>
+<tr><td><em>sūla</em></td><td>peace</td><td>n.</td></tr>
+<tr><td><em>tūm</em></td><td>plant</td><td>v.</td></tr>
+<tr><td><em>tʼāk</em></td><td>trade, buy</td><td>v.</td></tr>
+<tr><td><em>tʼāna</em></td><td>gift</td><td>n.</td></tr>
+<tr><td><em>tʼas</em></td><td>break</td><td>v.</td></tr>
+<tr><td><em>tʼem</em></td><td>weave</td><td>v.</td></tr>
+<tr><td><em>tʼen</em></td><td>dance</td><td>v.</td></tr>
+<tr><td><em>tʼerka</em></td><td>wagon</td><td>n.</td></tr>
+<tr><td><em>tʼexa</em></td><td>war; fight</td><td>n.</td></tr>
+<tr><td><em>xāp</em></td><td>cut</td><td>v.</td></tr>
+<tr><td><em>xūm</em></td><td>dig</td><td>v.</td></tr>
+<tr><td><em>yuta</em></td><td>path, road</td><td>n.</td></tr>
+</tbody></table></div>
+<h4 id="function-words">Function words</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>-ti</em></td><td>ordinal suffix</td><td>suf.</td></tr>
+<tr><td><em>a</em></td><td>to, toward</td><td>prep.</td></tr>
+<tr><td><em>am</em></td><td>already</td><td>adv.</td></tr>
+<tr><td><em>de</em></td><td>relativizer, complementizer</td><td>part.</td></tr>
+<tr><td><em>e</em></td><td>from</td><td>prep.</td></tr>
+<tr><td><em>hą</em></td><td>yes</td><td>part.</td></tr>
+<tr><td><em>kʰa</em></td><td>who</td><td>pron.</td></tr>
+<tr><td><em>kʰan</em></td><td>where</td><td>adv.</td></tr>
+<tr><td><em>kʰar</em></td><td>how</td><td>adv.</td></tr>
+<tr><td><em>kʰaru</em></td><td>why</td><td>adv.</td></tr>
+<tr><td><em>kʰu</em></td><td>what</td><td>pron.</td></tr>
+<tr><td><em>ma</em></td><td>yes/no question particle</td><td>part.</td></tr>
+<tr><td><em>nū</em></td><td>now</td><td>adv.</td></tr>
+<tr><td><em>suk</em></td><td>still</td><td>adv.</td></tr>
+<tr><td><em>tʰan</em></td><td>then; later</td><td>adv.</td></tr>
+<tr><td><em>tʰana</em></td><td>when</td><td>adv.</td></tr>
+<tr><td><em>tʼa</em></td><td>be, exist</td><td>v.</td></tr>
+<tr><td><em>tʼar</em></td><td>how many</td><td>adv.</td></tr>
+<tr><td><em>u-</em></td><td>not</td><td>pref.</td></tr>
+<tr><td><em>uma</em></td><td>there is no</td><td>part.</td></tr>
+<tr><td><em>xam</em></td><td>with</td><td>prep.</td></tr>
+<tr><td><em>xān</em></td><td>more</td><td>adv.</td></tr>
+<tr><td><em>xu</em></td><td>or</td><td>conj.</td></tr>
+<tr><td><em>xų</em></td><td>no</td><td>part.</td></tr>
+<tr><td><em>ya</em></td><td>and</td><td>conj.</td></tr>
+</tbody></table></div>
+<h4 id="numbers">Numbers</h4>
+<div class="table-wrap"><table class="lex-table">
+<thead><tr><th>Šiqʼāl</th><th>English</th><th>POS</th></tr></thead>
+<tbody>
+<tr><td><em>cʼa</em></td><td>twelve</td><td>num.</td></tr>
+<tr><td><em>cʼāya</em></td><td>one hundred forty-four</td><td>num.</td></tr>
+<tr><td><em>kʰal</em></td><td>three</td><td>num.</td></tr>
+<tr><td><em>lun</em></td><td>eight</td><td>num.</td></tr>
+<tr><td><em>mer</em></td><td>four</td><td>num.</td></tr>
+<tr><td><em>ŋel</em></td><td>eleven</td><td>num.</td></tr>
+<tr><td><em>pʼų</em></td><td>five</td><td>num.</td></tr>
+<tr><td><em>qʼat</em></td><td>seven</td><td>num.</td></tr>
+<tr><td><em>šek</em></td><td>six</td><td>num.</td></tr>
+<tr><td><em>so</em></td><td>one</td><td>num.</td></tr>
+<tr><td><em>tʰas</em></td><td>nine</td><td>num.</td></tr>
+<tr><td><em>tʼi</em></td><td>two</td><td>num.</td></tr>
+<tr><td><em>xum</em></td><td>ten</td><td>num.</td></tr>
+</tbody></table></div>
+<hr>
+<h2 id="10-texts">10. Texts</h2>
+<p>The texts below are given in the standard orthography, with interlinear glosses and a free translation. Morpheme boundaries are marked with hyphens in the glosses but not in the running text.</p>
+<p><strong>Glossing abbreviations.</strong> ABS absolutive, ERG ergative, GEN genitive, DAT dative, LOC locative, ABL ablative, PFV perfective, IPFV imperfective, RES resultative, PROSP prospective, VIS visual, SENS sensory, INFER inferential, REP reported, ASSUM assumed, NEG negative, PTCP participle, CONV converb, IMP imperative, OPT optative, DESID desiderative, ABIL abilitive, CAUS causative, REL relativizer, ABST abstract.</p>
+<h3 id="10-1-the-sheep-and-the-horses">10.1 The Sheep and the Horses</h3>
+<p>A version of the well-known fable, long used by linguists as a compact demonstration of a language's morphosyntax.</p>
+<p><strong>Running text</strong></p>
+<blockquote>Xariši pʼeniš de utʼay pʼenkha pʼenya kʼurur. Cūrwayši soš tʼerka qʰami, yāpwayši soš kʰām pʰali, yāpwayši soš tʰer tūman. Kʰeni pʼen kʼururkha: "Tʼīxay naxūl, xarwayni tʰer de cūrwayši kʼurur." Kʰenir kʼurur: "Qʼana, pʼen! Tʼīxay maxūlur, xarwaymi de kʼalwayši pātaš pʼenya a nāka pʰāy. Ya utʼay pʼenkha pʼenya." Qʼante sa, pʼeri pʼen a gūr.</blockquote>
+<p><strong>Interlinear</strong></p>
+<pre class="interlinear"><code>Xar-i-ši-Ø          pʼen-iš          de   u-tʼa-i-Ø        pʼen-kha       pʼenya   kʼur-ur.
+see-PFV-VIS-3SG.ERG sheep-ERG        REL  NEG-be-PFV-VIS-3SG.ABS sheep-DAT    wool     horse-PL
+'A sheep that had no wool saw horses.'</code></pre>
+<pre class="interlinear"><code>Cūr-wa-i-ši-Ø       so-š      tʼerka   qʰam-i,
+pull-IPFV-VIS-3SG.ERG-3SG.ABS one-ERG wagon heavy-PTCP
+yāp-wa-i-ši-Ø       so-š      kʰām   pʰal-i,
+carry-IPFV-VIS-3SG.ERG-3SG.ABS one-ERG load big-PTCP
+yāp-wa-i-ši-Ø       so-š      tʰer     tūman.
+carry-IPFV-VIS-3SG.ERG-3SG.ABS one-ERG man    quickly
+'One was pulling a heavy wagon, one was carrying a big load, and one was carrying a man quickly.'</code></pre>
+<pre class="interlinear"><code>Kʰen-i-Ø        pʼen   kʼur-ur-kha:
+say-PFV-VIS-3SG.ABS sheep  horse-PL-DAT
+'The sheep said to the horses:'</code></pre>
+<pre class="interlinear"><code>"Tʼīxa-i-Ø      na-xūl,   xar-wa-i-ni-Ø        tʰer   de   cūr-wa-i-ši-Ø      kʼur-ur."
+ ache-PFV-VIS-3SG.ABS my-heart see-IPFV-VIS-1SG.ERG-3SG.ABS man REL pull-IPFV-VIS-3SG.ERG-3SG.ABS horse-PL
+'"My heart aches, seeing a man driving horses."'</code></pre>
+<pre class="interlinear"><code>Kʰen-i-r        kʼur-ur:
+say-PFV-VIS-3PL.ABS horse-PL
+'The horses said:'</code></pre>
+<pre class="interlinear"><code>"Qʼan-a,    pʼen!   Tʼīxa-i-Ø      ma-xūl-ur,
+ hear-IMP.2SG sheep  ache-PFV-VIS-3SG.ABS our-heart-PL
+ xar-wa-i-mi-Ø         de   kʼal-wa-i-ši-Ø         pāta-š      pʼenya   a   nāka   pʰā-y.
+ see-IPFV-VIS-1PL.ERG-3SG.ABS REL make-IPFV-VIS-3SG.ERG-3SG.ABS master-ERG wool to garment warm-PTCP
+ 'Listen, sheep! Our hearts ache, seeing that the master makes wool into a warm garment.'</code></pre>
+<pre class="interlinear"><code>"Ya   u-tʼa-i-Ø        pʼen-kha       pʼenya."
+ and  NEG-be-PFV-VIS-3SG.ABS sheep-DAT wool
+'"And the sheep has no wool."'</code></pre>
+<pre class="interlinear"><code>Qʼan-te      sa,   pʼer-i-Ø       pʼen   a   gūr.
+hear-CONV    this  flee-PFV-VIS-3SG.ABS sheep to field
+'Having heard this, the sheep fled into the plain.'</code></pre>
+<p><strong>Free translation</strong></p>
+<p>"A sheep that had no wool saw horses — one pulling a heavy wagon, one carrying a big load, and one carrying a man quickly. The sheep said to the horses: 'My heart aches, seeing a man driving horses.' The horses said: 'Listen, sheep! Our hearts ache, seeing that the master makes wool into a warm garment. And the sheep has no wool.' Having heard this, the sheep fled into the plain."</p>
+<h3 id="10-2-proverbs">10.2 Proverbs</h3>
+<p><strong>Proverb 1</strong></p>
+<blockquote>Uxūlqʼeniši nāwaš qʰara.</blockquote>
+<pre class="interlinear"><code>U-xūlqʼen-i-ši-Ø        nāwa-š         qʰara.
+NEG-forget-PFV-VIS-3SG.ERG-3SG.ABS river-ERG mountain
+'The river does not forget the mountain.'</code></pre>
+<p><strong>Proverb 2</strong></p>
+<blockquote>Mā yuti a tʼāya, šiqʼa yuti a qʼenāl.</blockquote>
+<pre class="interlinear"><code>Mā     yut-i-Ø        a   tʼāya,   šiqʼa   yut-i-Ø        a   qʼen-āl.
+water  go-PFV-VIS-3SG.ABS to  sea      person  go-PFV-VIS-3SG.ABS to  die-ABST
+'Water goes to the sea; a person goes to death.'</code></pre>
+<p><strong>Proverb 3</strong></p>
+<blockquote>Yuti tʼāla, wāyi nūxa; ʼūli šiqʼa, qʼeni šiqʼa.</blockquote>
+<pre class="interlinear"><code>Yut-i-Ø      tʼāla,   wāy-i-Ø      nūxa;   ʼūl-i-Ø      šiqʼa,   qʼen-i-Ø      šiqʼa.
+go-PFV-VIS-3SG.ABS light  come-PFV-VIS-3SG.ABS night  live-PFV-VIS-3SG.ABS person  die-PFV-VIS-3SG.ABS person
+'Light goes, night comes; a person lives, a person dies.'</code></pre>
+<h3 id="10-3-a-dialogue">10.3 A dialogue</h3>
+<blockquote><strong>A:</strong> Yutwat kʰan?<br><strong>B:</strong> Yutwan a qara.<br><strong>A:</strong> Kʰaru?<br><strong>B:</strong> Xarulini qʼelway tʰawa.<br><strong>A:</strong> Wāya xam na.<br><strong>B:</strong> Uyutkʰuwan. Tūxawan a nagālya nū.<br><strong>A:</strong> Sāma. Tʰan xaryam.</blockquote>
+<pre class="interlinear"><code>A: Yut-wa-t        kʰan?
+   go-IPFV-2SG.ABS where
+   'Where are you going?'
+
+B: Yut-wa-n        a   qara.
+   go-IPFV-1SG.ABS to  mountain
+   'I am going to the mountain.'
+
+A: Kʰaru?
+   why
+   'Why?'
+
+B: Xar-ul-i-ni-Ø        qʼel-wa-i-Ø      tʰawa.
+   see-DESID-PFV-VIS-1SG.ERG-3SG.ABS rise-IPFV-VIS-3SG.ABS sun
+   'I want to see the sun rise.'
+
+A: Wāy-a   xam  na.
+   come-IMP with me
+   'Come with me.'
+
+B: U-yut-kʰu-wa-n.          Tūxa-wa-n        a   na-gālya   nū.
+   NEG-go-ABIL-IPFV-1SG.ABS return-IPFV-1SG.ABS to  1SG-village now
+   'I cannot. I am returning to my village now.'
+
+A: Sāma.   Tʰan   xar-ya-m.
+   good    later  see-RECIP-1PL.ABS
+   'Good. We will see each other later.'</code></pre>
+<p>The verbs of this dialogue carry the <strong>assumed</strong> evidential (zero), which is natural for intentions, plans, and expectations. A speaker reporting a witnessed event would use <em>-i</em>, as in the fable.</p>
+<h3 id="10-4-a-lament">10.4 A lament</h3>
+<p>A fragment of a funeral lament, in the traditional style. The dead are addressed directly; the verb-final line is a mark of the lament register.</p>
+<blockquote>Šiqʼa naxa, kʰan yutwat?<br>Uma ta, uma tan šiqʼāl.<br>Pʼeli sūra, wāyi nūxa;<br>naxūl tʼīxay, tanāma xūlayni.</blockquote>
+<pre class="interlinear"><code>Šiqʼa   na-xa,        kʰan  yut-wa-t?
+person  1SG-father    where go-IPFV-2SG.ABS
+'My father, where are you going?'
+
+Uma   ta,     uma   tan        šiqʼ-āl.
+none  you     none  2SG.GEN    speak-ABST
+'You are not here, your speech is not here.'
+
+Pʼel-i-Ø       sūra,   wāy-i-Ø      nūxa;
+fall-PFV-VIS-3SG.ABS day    come-PFV-VIS-3SG.ABS night
+'The day falls, the night comes;'
+
+na-xūl   tʼīxa-i-Ø,      ta-nāma   xūla-i-ni-Ø.
+1SG-heart ache-PFV-VIS-3SG.ABS 2SG-name remember-PFV-VIS-1SG.ERG-3SG.ABS
+'my heart aches, I remember your name.'</code></pre>
+<h3 id="10-5-a-riddle">10.5 A riddle</h3>
+<blockquote>Kʰa tʼay de yuti a qʼāla, ya uma wakha kʰer?<br>— Pʼexa.</blockquote>
+<pre class="interlinear"><code>Kʰa   tʼa-i-Ø      de   yut-i-Ø        a   qʼāla,   ya   uma   wakha   kʰer?
+who   be-PFV-VIS-3SG.ABS REL go-PFV-VIS-3SG.ABS to sky, and none 3SG.NH-DAT body
+'What is it that goes to the sky and has no body?'
+
+Pʼexa.
+smoke
+'Smoke.'</code></pre>
+<p>The riddle turns on the fact that smoke, like speech, has no body — a favourite theme of Šiqʼar poetry.</p>
+<h3 id="10-6-phrasebook">10.6 Phrasebook</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Šiqʼāl</th><th>English</th></tr></thead>
+<tbody>
+<tr><td><em>Sāma sūra.</em></td><td>Good day.</td></tr>
+<tr><td><em>Sāma nūxa.</em></td><td>Good night.</td></tr>
+<tr><td><em>Nāma tan kʰa?</em></td><td>What is your name?</td></tr>
+<tr><td><em>Nāma nan …</em></td><td>My name is …</td></tr>
+<tr><td><em>Hą.</em> / <em>Xų.</em></td><td>Yes. / No.</td></tr>
+<tr><td><em>Ucʼarwani.</em></td><td>I don't know.</td></tr>
+<tr><td><em>Tʼāniya nakha mā.</em></td><td>Give me water.</td></tr>
+<tr><td><em>Xān tūman!</em></td><td>Faster!</td></tr>
+<tr><td><em>Sūla!</em></td><td>Wait!</td></tr>
+<tr><td><em>Wāya!</em></td><td>Come!</td></tr>
+<tr><td><em>Yuta!</em></td><td>Go!</td></tr>
+<tr><td><em>Sāma yut.</em></td><td>Safe travels.</td></tr>
+<tr><td><em>Am wāyin.</em></td><td>I have arrived.</td></tr>
+<tr><td><em>Kʰar tʼay?</em></td><td>How are you?</td></tr>
+<tr><td><em>Sāma tʼay.</em></td><td>I'm fine.</td></tr>
+</tbody></table></div>
+  </main>
+</div>
+<footer>Šiqʼāl · 227 lexical entries · a constructed language · <a href="Shiqal.md">Markdown edition</a></footer>
+<script>
+(function () {
+  var input = document.getElementById('lexfilter');
+  if (!input) return;
+  var count = document.getElementById('lexcount');
+  var tables = Array.prototype.slice.call(document.querySelectorAll('table.lex-table'));
+  var rows = [];
+  tables.forEach(function (t) {
+    t.querySelectorAll('tbody tr').forEach(function (r) { rows.push(r); });
+  });
+  function update() {
+    var q = input.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function (r) {
+      var hit = !q || r.textContent.toLowerCase().indexOf(q) !== -1;
+      r.classList.toggle('hidden', !hit);
+      if (hit) shown++;
+    });
+    count.textContent = q ? shown + ' matching entries' : rows.length + ' entries';
+  }
+  input.addEventListener('input', update);
+  update();
+})();
+</script>
+</body>
+</html>
